@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/ThemeProvider"
+import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { cookies } from "next/headers"
 import React from "react"

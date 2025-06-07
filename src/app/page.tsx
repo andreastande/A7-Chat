@@ -1,14 +1,16 @@
 import { AppSidebar } from "@/components/AppSidebar"
-import ChatPanel from "@/components/ChatPanel"
-import DarkModePanel from "@/components/DarkModePanel"
+import Chat from "@/components/chat/Chat"
+import ChatLayout from "@/components/ChatLayout"
 
 export default function Page() {
   return (
     <>
       <AppSidebar />
-      <ChatPanel />
-      <DarkModePanel />
-      <main></main>
+      <ChatLayout>
+        <main className="w-full flex justify-center">
+          <Chat />
+        </main>
+      </ChatLayout>
     </>
   )
 }
