@@ -1,18 +1,37 @@
+"use client"
+
+import { useMessageStore } from "@/stores/messageStore"
 import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
-import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import TextareaAutosize from "react-textarea-autosize"
 
 type ChatInputProps = {
-  onSubmit: (text: string) => void
+  onSubmit?: (text: string) => void
 }
 
 export default function ChatInput({ onSubmit }: ChatInputProps) {
-  const [input, setInput] = useState("")
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const draftMessage = useMessageStore((s) => s.draftMessage)
+  const setDraftMessage = useMessageStore((s) => s.setDraftMessage)
+  const clearDraftMessage = useMessageStore((s) => s.clearDraftMessage)
+  const setPendingMessage = useMessageStore((s) => s.setPendingMessage)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(input.trim())
-    setInput("")
+
+    const msg = draftMessage.trim()
+    if (!msg) return
+
+    clearDraftMessage()
+    onSubmit?.(msg)
+
+    if (pathname === "/") {
+      setPendingMessage(msg)
+      const newChatId = crypto.randomUUID()
+      router.push(`/chat/${newChatId}`)
+    }
   }
 
   return (
@@ -23,12 +42,12 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
       >
         <TextareaAutosize
           autoFocus
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={draftMessage}
+          onChange={(e) => setDraftMessage(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault()
-              if (input.trim()) {
+              if (draftMessage.trim()) {
                 handleSubmit(e)
               }
             }
@@ -52,7 +71,7 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
             </button>
             <button
               type="submit"
-              disabled={!input.trim()}
+              disabled={!draftMessage.trim()}
               className="cursor-pointer bg-sky-400 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
             >
               <ArrowUp className="size-5" />
