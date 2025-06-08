@@ -1,6 +1,6 @@
 "use client"
 
-import { useMessageStore } from "@/stores/messageStore"
+import { useMessageStore } from "@/stores/messageStoreProvider"
 import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import TextareaAutosize from "react-textarea-autosize"

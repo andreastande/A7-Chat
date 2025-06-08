@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function AppSidebar() {
   return (
@@ -20,17 +21,17 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <span>Thread 1</span>
+                  <Link href="/chat/1">Thread 1</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <span>Thread 2</span>
+                  <Link href="/chat/2">Thread 2</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <span>Thread 3</span>
+                  <Link href="/chat/3">Thread 3</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

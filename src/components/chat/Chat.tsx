@@ -1,6 +1,6 @@
 "use client"
 
-import { useMessageStore } from "@/stores/messageStore"
+import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
 import { useEffect, useRef } from "react"
 import ChatBubble from "./ChatBubble"
