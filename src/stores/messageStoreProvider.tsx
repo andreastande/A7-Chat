@@ -1,16 +1,8 @@
-'use client'
+"use client"
 
-import {
-  createContext,
-  useContext,
-  useRef,
-  type ReactNode
-} from "react"
+import { createMessageStore, type MessageStore } from "@/stores/messageStore"
+import { createContext, useContext, useRef, type ReactNode } from "react"
 import { useStore } from "zustand"
-import {
-  createMessageStore,
-  type MessageStore
-} from "@/stores/messageStore"
 
 export type MessageStoreApi = ReturnType<typeof createMessageStore>
 
@@ -23,11 +15,7 @@ export function MessageStoreProvider({ children }: { children: ReactNode }) {
     storeRef.current = createMessageStore()
   }
 
-  return (
-    <MessageStoreContext.Provider value={storeRef.current}>
-      {children}
-    </MessageStoreContext.Provider>
-  )
+  return <MessageStoreContext.Provider value={storeRef.current}>{children}</MessageStoreContext.Provider>
 }
 
 export function useMessageStore<T>(selector: (state: MessageStore) => T): T {
