@@ -19,20 +19,21 @@ export default function ChatPanel() {
       `}
     >
       <SidebarTrigger className="cursor-pointer hover:bg-sky-200" />
-      {pathname !== "/" ? (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="cursor-pointer hover:bg-sky-200"
-          onClick={() => router.push("/")}
-        >
-          <Plus className="cursor-pointer size-5" />
-        </Button>
-      ) : (
-        <div className="p-2">
-          <Plus className="size-5" color="#b0b7c3" />
-        </div>
-      )}
+      {!open &&
+        (pathname !== "/" ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer hover:bg-sky-200"
+            onClick={() => router.push("/")}
+          >
+            <Plus className="cursor-pointer size-5" />
+          </Button>
+        ) : (
+          <div className="p-2">
+            <Plus className="size-5" color="#b0b7c3" />
+          </div>
+        ))}
     </div>
   )
 }
