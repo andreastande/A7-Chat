@@ -41,19 +41,19 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
         <div className="mt-2 flex items-center justify-between">
           <button
             type="button"
-            className="flex items-center cursor-pointer gap-2 rounded-lg p-2 hover:bg-sky-200 -translate-x-1.5"
+            className="flex items-center cursor-pointer gap-2 rounded-lg p-2 hover:bg-sky-150 -translate-x-1.5"
           >
             <span className="text-sm">4.1 Nano</span>
             <ChevronDown className="size-4" />
           </button>
           <div className="flex items-center gap-2">
-            <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-200">
+            <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150">
               <Paperclip className="size-4" />
             </button>
             <button
               type="submit"
               disabled={!input.trim()}
-              className="cursor-pointer bg-sky-400 rounded-lg p-2 text-white disabled:bg-sky-200 disabled:cursor-not-allowed"
+              className="cursor-pointer bg-sky-400 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
             >
               <ArrowUp className="size-5" />
             </button>
