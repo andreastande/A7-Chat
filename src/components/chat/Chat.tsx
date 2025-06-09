@@ -3,22 +3,30 @@
 import { storeMessage } from "@/actions/actions"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
+import { UIDataTypes, UIMessage, UIMessagePart } from "ai"
 import { useCallback, useEffect, useRef } from "react"
 import ChatBubble from "./ChatBubble"
 import ChatInput from "./ChatInput"
 
-export default function Chat({ chatId }: { chatId: string }) {
+export default function Chat({ chatId, initialMessages }: { chatId: string; initialMessages: UIMessage[] }) {
   const pendingMessage = useMessageStore((s) => s.pendingMessage)
   const clearPendingMessage = useMessageStore((s) => s.clearPendingMessage)
 
   const isPendingMessageSent = useRef(false) // need a guard so useEffect is not ran twice in dev environment
 
-  const { messages, sendMessage } = useChat()
+  const { messages, sendMessage } = useChat({
+    messages: initialMessages,
+    onFinish: async (message) => {
+      await storeMessage(chatId, "assistant", message.message.parts, false)
+    },
+  })
 
   const handleSubmit = useCallback(
-    async ({ text, isFirstMessage = false }: { text: string; isFirstMessage?: boolean }) => {
-      sendMessage({ text }, { body: { chatId } })
-      await storeMessage(chatId, text, isFirstMessage)
+    async (text: string, isFirstMessage: boolean = false) => {
+      sendMessage({ text })
+
+      const messageParts = [{ type: "text", text }] as UIMessagePart<UIDataTypes>[]
+      await storeMessage(chatId, "user", messageParts, isFirstMessage) // try-catch?
     },
     [chatId, sendMessage]
   )
@@ -27,7 +35,7 @@ export default function Chat({ chatId }: { chatId: string }) {
     if (!pendingMessage || isPendingMessageSent.current) return
     isPendingMessageSent.current = true
 
-    handleSubmit({ text: pendingMessage, isFirstMessage: true })
+    handleSubmit(pendingMessage, true)
     clearPendingMessage()
   }, [pendingMessage, handleSubmit, clearPendingMessage])
 
@@ -38,7 +46,7 @@ export default function Chat({ chatId }: { chatId: string }) {
           <ChatBubble key={message.id} message={message} />
         ))}
       </div>
-      <ChatInput onSubmit={(text: string) => handleSubmit({ text })} />
+      <ChatInput onSubmit={(text: string) => handleSubmit(text)} />
     </>
   )
 }

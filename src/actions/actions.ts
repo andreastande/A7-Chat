@@ -3,9 +3,14 @@
 import { db } from "@/db"
 import { chat, message } from "@/db/schema"
 import { getUserId } from "@/lib/auth-helpers"
-import { generateId } from "ai"
+import { generateId, UIDataTypes, UIMessagePart } from "ai"
 
-export async function storeMessage(chatId: string, text: string, isFirstMessage: boolean) {
+export async function storeMessage(
+  chatId: string,
+  role: string,
+  messageParts: UIMessagePart<UIDataTypes>[],
+  isFirstMessage: boolean
+) {
   const userId = await getUserId()
 
   if (isFirstMessage) {
@@ -18,8 +23,8 @@ export async function storeMessage(chatId: string, text: string, isFirstMessage:
   await db.insert(message).values({
     messageId: generateId(),
     chatId,
-    role: "user",
-    content: text,
+    role,
+    messageParts,
     modelId: "gpt-4.1-nano",
   })
 }
