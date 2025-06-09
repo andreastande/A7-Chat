@@ -9,23 +9,22 @@ import { eq } from "drizzle-orm"
 export default async function Page({ params }: { params: Promise<{ chatId: string }> }) {
   const { chatId } = await params
 
-  const initialMessages = await db
+  const messageRows = await db
     .select({
-      id: message.messageId,
-      role: message.role,
-      parts: message.messageParts,
-      // modelId: message.modelId,
+      uiMessage: message.uiMessage,
     })
     .from(message)
     .where(eq(message.chatId, chatId))
     .orderBy(message.createdAt)
+
+  const initialMessages = messageRows.map((msg) => msg.uiMessage as UIMessage)
 
   return (
     <>
       <AppSidebar />
       <ChatLayout>
         <main className="w-full flex justify-center">
-          <Chat chatId={chatId} initialMessages={initialMessages as UIMessage[]} />
+          <Chat chatId={chatId} initialMessages={initialMessages} />
         </main>
       </ChatLayout>
     </>

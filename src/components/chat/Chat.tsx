@@ -1,9 +1,9 @@
 "use client"
 
-import { storeMessage } from "@/actions/actions"
+import { storeAssistantMessage, storeUserMessage } from "@/actions/actions"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
-import { UIDataTypes, UIMessage, UIMessagePart } from "ai"
+import { UIMessage } from "ai"
 import { useCallback, useEffect, useRef } from "react"
 import ChatBubble from "./ChatBubble"
 import ChatInput from "./ChatInput"
@@ -16,17 +16,15 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
 
   const { messages, sendMessage } = useChat({
     messages: initialMessages,
-    onFinish: async (message) => {
-      await storeMessage(chatId, "assistant", message.message.parts, false)
+    onFinish: async ({ message }) => {
+      await storeAssistantMessage(chatId, message) // try-catch?
     },
   })
 
   const handleSubmit = useCallback(
     async (text: string, isFirstMessage: boolean = false) => {
       sendMessage({ text })
-
-      const messageParts = [{ type: "text", text }] as UIMessagePart<UIDataTypes>[]
-      await storeMessage(chatId, "user", messageParts, isFirstMessage) // try-catch?
+      await storeUserMessage(chatId, text, isFirstMessage) // try-catch?
     },
     [chatId, sendMessage]
   )

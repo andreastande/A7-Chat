@@ -12,5 +12,13 @@ export async function POST(req: Request) {
     messages: convertToModelMessages(messages),
   })
 
-  return result.toUIMessageStreamResponse()
+  return result.toUIMessageStreamResponse({
+    messageMetadata: ({ part }) => {
+      if (part.type === "finish") {
+        return {
+          model: "gpt-4.1-nano",
+        }
+      }
+    },
+  })
 }

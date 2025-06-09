@@ -1,4 +1,4 @@
-import { boolean, json, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -74,13 +74,13 @@ export const chat = pgTable("chat", {
 })
 
 export const message = pgTable("message", {
-  messageId: text("message_id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   chatId: text("chat_id")
     .notNull()
     .references(() => chat.chatId, { onDelete: "cascade" }),
-  role: text("role").notNull(),
-  messageParts: json("message_parts").notNull(),
-  modelId: text("model_id").notNull(),
+  uiMessage: jsonb("ui_message").notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
