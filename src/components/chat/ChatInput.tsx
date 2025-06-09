@@ -29,13 +29,12 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
 
     if (pathname === "/") {
       setPendingMessage(msg)
-      const newChatId = crypto.randomUUID()
-      router.push(`/chat/${newChatId}`)
+      router.push(`/chat/${crypto.randomUUID()}`)
     }
   }
 
   return (
-    <div className="fixed bottom-0 pb-6 bg-white w-full max-w-[calc(var(--container-3xl)-48px)]">
+    <div className="fixed bottom-0 pb-6 px-6 bg-background w-full max-w-3xl">
       <form
         onSubmit={handleSubmit}
         className="-translate-y-2 px-4 py-2 rounded-2xl shadow-xl bg-sky-50 border border-sky-200"

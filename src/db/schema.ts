@@ -55,3 +55,37 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").$defaultFn(() => /* @__PURE__ */ new Date()),
   updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date()),
 })
+
+/* ------------------- */
+
+export const chat = pgTable("chat", {
+  chatId: text("chat_id").primaryKey(),
+  userId: text("user_id").notNull(),
+  title: text("title")
+    .$defaultFn(() => /* @__PURE__ */ "New chat")
+    .notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .$onUpdateFn(() => new Date())
+    .notNull(),
+})
+
+export const message = pgTable("message", {
+  messageId: text("message_id").primaryKey(),
+  chatId: text("chat_id")
+    .notNull()
+    .references(() => chat.chatId, { onDelete: "cascade" }),
+  role: text("role").notNull(),
+  content: text("content").notNull(),
+  modelId: text("model_id").notNull(),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .$onUpdateFn(() => new Date())
+    .notNull(),
+})
