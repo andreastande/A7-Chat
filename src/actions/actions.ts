@@ -3,6 +3,7 @@
 import { db } from "@/db"
 import { chat, message } from "@/db/schema"
 import { getUserId } from "@/lib/auth-helpers"
+import { encrypt, encryptUIMessage } from "@/lib/crypto"
 import { generateId, UIMessage } from "ai"
 
 export async function storeUserMessage(chatId: string, text: string, isFirstMessage: boolean) {
@@ -20,7 +21,7 @@ export async function storeUserMessage(chatId: string, text: string, isFirstMess
     uiMessage: {
       id: generateId(),
       role: "user",
-      parts: [{ type: "text", text }],
+      parts: [{ type: "text", text: encrypt(text) }],
     },
   })
 }
@@ -30,6 +31,6 @@ export async function storeAssistantMessage(chatId: string, uiMessage: UIMessage
 
   await db.insert(message).values({
     chatId,
-    uiMessage,
+    uiMessage: encryptUIMessage(uiMessage),
   })
 }

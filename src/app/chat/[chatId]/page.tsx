@@ -3,6 +3,7 @@ import Chat from "@/components/chat/Chat"
 import ChatLayout from "@/components/ChatLayout"
 import { db } from "@/db"
 import { message } from "@/db/schema"
+import { decryptUIMessage } from "@/lib/crypto"
 import { UIMessage } from "ai"
 import { eq } from "drizzle-orm"
 
@@ -17,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
     .where(eq(message.chatId, chatId))
     .orderBy(message.createdAt)
 
-  const initialMessages = messageRows.map((msg) => msg.uiMessage as UIMessage)
+  const initialMessages = messageRows.map(({ uiMessage }) => decryptUIMessage(uiMessage as UIMessage))
 
   return (
     <>
