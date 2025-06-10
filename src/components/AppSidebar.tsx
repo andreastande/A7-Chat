@@ -9,9 +9,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { db } from "@/db"
+import { chat } from "@/db/schema"
+import { getUserId } from "@/lib/auth-helpers"
+import { desc, eq } from "drizzle-orm"
 import Link from "next/link"
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const userId = await getUserId()
+
+  const chats = await db
+    .select({
+      chatId: chat.chatId,
+      title: chat.title,
+      updatedAt: chat.updatedAt,
+    })
+    .from(chat)
+    .where(eq(chat.userId, userId))
+    .orderBy(desc(chat.updatedAt))
+
   return (
     <Sidebar>
       <SidebarHeader className="h-30" />
@@ -19,21 +35,13 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/chat/1">Thread 1</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/chat/2">Thread 2</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/chat/3">Thread 3</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {chats.map((chat) => (
+                <SidebarMenuItem key={chat.chatId}>
+                  <SidebarMenuButton asChild>
+                    <Link href={`/chat/${chat.chatId}`}>{chat.title}</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

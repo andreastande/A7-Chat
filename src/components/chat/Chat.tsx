@@ -22,9 +22,9 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
   })
 
   const handleSubmit = useCallback(
-    async (text: string, isFirstMessage: boolean = false) => {
+    async (text: string) => {
       sendMessage({ text })
-      await storeUserMessage(chatId, text, isFirstMessage) // try-catch?
+      await storeUserMessage(chatId, text) // try-catch?
     },
     [chatId, sendMessage]
   )
@@ -33,7 +33,7 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     if (!pendingMessage || isPendingMessageSent.current) return
     isPendingMessageSent.current = true
 
-    handleSubmit(pendingMessage, true)
+    handleSubmit(pendingMessage)
     clearPendingMessage()
   }, [pendingMessage, handleSubmit, clearPendingMessage])
 

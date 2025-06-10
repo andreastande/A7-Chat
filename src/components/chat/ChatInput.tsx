@@ -1,5 +1,6 @@
 "use client"
 
+import { createChat } from "@/actions/actions"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
@@ -18,7 +19,7 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
   const clearDraftMessage = useMessageStore((s) => s.clearDraftMessage)
   const setPendingMessage = useMessageStore((s) => s.setPendingMessage)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const msg = draftMessage.trim()
@@ -29,7 +30,9 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
 
     if (pathname === "/") {
       setPendingMessage(msg)
-      router.push(`/chat/${crypto.randomUUID()}`)
+      const chatId = crypto.randomUUID()
+      await createChat(chatId)
+      router.push(`/chat/${chatId}`)
     }
   }
 
