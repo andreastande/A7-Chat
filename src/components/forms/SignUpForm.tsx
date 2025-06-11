@@ -12,14 +12,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "../ui/input"
 
 const formSchema = z.object({
+  name: z.string({ required_error: "Name is required" }).min(1, "Please enter a name"),
   email: z.string({ required_error: "Email is required" }).email("Please enter a valid email address"),
   password: z.string({ required_error: "Password is required" }).min(8, "Password must be at least 8 characters long"),
 })
 
-export default function LogInForm() {
+export default function SignUpForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -32,12 +34,13 @@ export default function LogInForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const result = await authClient.signIn.email({
+      const result = await authClient.signUp.email({
+        name: values.name,
         email: values.email,
         password: values.password,
       })
       if (result.error) {
-        setError(result.error.message ?? "Login failed")
+        setError(result.error.message ?? "Signup failed")
       } else {
         router.push("/")
       }
@@ -49,6 +52,19 @@ export default function LogInForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-80">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Name" type="text" autoComplete="name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"

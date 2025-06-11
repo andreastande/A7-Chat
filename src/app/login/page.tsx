@@ -10,7 +10,7 @@ export default function Page() {
         <LogInForm />
         <span className="text-sm mt-2">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="underline text-sky-700 dark:tex-white">
+          <Link href="/signup" className="underline text-sky-700 dark:tex-white">
             Sign up
           </Link>
         </span>
