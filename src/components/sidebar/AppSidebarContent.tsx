@@ -13,7 +13,13 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar"
 
-export default function AppSidebarContent({ initialChats }: { initialChats: Chat[] }) {
+export default function AppSidebarContent({
+  initialChats,
+  currentChatId,
+}: {
+  initialChats: Chat[]
+  currentChatId: string | undefined
+}) {
   const setChats = useChatStore((s) => s.setChats)
   const chats = useChatStore((s) => s.chats)
 
@@ -28,7 +34,7 @@ export default function AppSidebarContent({ initialChats }: { initialChats: Chat
           <SidebarMenu>
             {chats.map((chat) => (
               <SidebarMenuItem key={chat.chatId}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild isActive={currentChatId === chat.chatId}>
                   <Link href={`/chat/${chat.chatId}`}>{chat.title}</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

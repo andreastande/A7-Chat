@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
           navigateTo="/"
         />
       )}
-      <AppSidebar />
+      <AppSidebar chatId={chatId} />
       <ChatLayout>
         <main className="w-full flex justify-center">
           <Chat chatId={chatId} initialMessages={initialMessages} />

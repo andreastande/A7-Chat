@@ -6,7 +6,7 @@ import { Chat } from "@/types/chat"
 import { desc, eq } from "drizzle-orm"
 import AppSidebarContent from "./AppSidebarContent"
 
-export async function AppSidebar() {
+export async function AppSidebar({ chatId }: { chatId?: string }) {
   const { userId } = await verifySession()
 
   const initialChats = await db
@@ -24,7 +24,7 @@ export async function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="h-30" />
-      <AppSidebarContent initialChats={initialChats as Chat[]} />
+      <AppSidebarContent initialChats={initialChats as Chat[]} currentChatId={chatId} />
       <SidebarFooter className="h-30" />
     </Sidebar>
   )
