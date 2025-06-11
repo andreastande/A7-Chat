@@ -3,3 +3,7 @@ export type Chat = {
   title: string
   updatedAt: Date
 }
+
+export type ChatWithCategory = Chat & {
+  category: string
+}

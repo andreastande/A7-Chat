@@ -1,6 +1,6 @@
 "use client"
 
-import { createChat } from "@/actions/actions"
+import { createChat } from "@/actions/chat"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"

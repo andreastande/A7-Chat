@@ -1,17 +1,11 @@
 "use client"
 
+import { categorizeChats } from "@/lib/chatCategorizer"
 import { useChatStore } from "@/stores/chatStoreProvider"
 import { Chat } from "@/types/chat"
-import Link from "next/link"
 import { useEffect } from "react"
-import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "../ui/sidebar"
+import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "../ui/sidebar"
+import ChatItem from "./ChatItem"
 
 export default function AppSidebarContent({
   initialChats,
@@ -27,21 +21,28 @@ export default function AppSidebarContent({
     setChats(initialChats)
   }, [initialChats, setChats])
 
+  const { chatsWithCategory, categories } = categorizeChats(chats)
+
   return (
     <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {chats.map((chat) => (
-              <SidebarMenuItem key={chat.chatId}>
-                <SidebarMenuButton asChild isActive={currentChatId === chat.chatId}>
-                  <Link href={`/chat/${chat.chatId}`}>{chat.title}</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      {categories.map((category) => (
+        <SidebarGroup key={category}>
+          <SidebarGroupLabel>{category}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {chatsWithCategory
+                .filter((chat) => chat.category === category)
+                .map((chat) => (
+                  <ChatItem
+                    key={`${chat.category}-${chat.title}-${chat.updatedAt}`}
+                    chat={chat}
+                    currentChatId={currentChatId}
+                  />
+                ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
     </SidebarContent>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { storeAssistantMessage, storeUserMessage } from "@/actions/actions"
+import { storeAssistantMessage, storeUserMessage } from "@/actions/message"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
 import { UIMessage } from "ai"

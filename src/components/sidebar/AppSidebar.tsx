@@ -1,4 +1,4 @@
-import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
+import { Sidebar, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
 import { db } from "@/db"
 import { chat } from "@/db/schema"
 import { verifySession } from "@/lib/dal"
@@ -23,9 +23,10 @@ export async function AppSidebar({ chatId }: { chatId?: string }) {
 
   return (
     <Sidebar>
-      <SidebarHeader className="h-30" />
+      <SidebarHeader className="h-30 border-b border-sky-200" />
       <AppSidebarContent initialChats={initialChats as Chat[]} currentChatId={chatId} />
-      <SidebarFooter className="h-30" />
+      <SidebarFooter className="h-30 border-t border-sky-200" />
+      <SidebarRail />
     </Sidebar>
   )
 }
