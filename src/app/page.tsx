@@ -1,6 +1,6 @@
-import { AppSidebar } from "@/components/AppSidebar"
 import EmptyChat from "@/components/chat/EmptyChat"
 import ChatLayout from "@/components/ChatLayout"
+import { AppSidebar } from "@/components/sidebar/AppSidebar"
 
 export default function Page() {
   return (

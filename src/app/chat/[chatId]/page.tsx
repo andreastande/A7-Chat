@@ -1,10 +1,10 @@
-import { AppSidebar } from "@/components/AppSidebar"
 import Chat from "@/components/chat/Chat"
 import ChatLayout from "@/components/ChatLayout"
+import { AppSidebar } from "@/components/sidebar/AppSidebar"
 import { db } from "@/db"
 import { chat, message } from "@/db/schema"
-import { getUserId } from "@/lib/auth-helpers"
 import { decryptUIMessage } from "@/lib/crypto"
+import { verifySession } from "@/lib/dal"
 import { UIMessage } from "ai"
 import { and, eq } from "drizzle-orm"
 import dynamic from "next/dynamic"
@@ -14,7 +14,7 @@ const ToastInvoker = dynamic(() => import("@/components/ToastInvoker"), { ssr: !
 export default async function Page({ params }: { params: Promise<{ chatId: string }> }) {
   const { chatId } = await params
 
-  const userId = await getUserId()
+  const { userId } = await verifySession()
 
   const chatRow = await db
     .select({ userId: chat.userId })
