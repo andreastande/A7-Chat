@@ -27,7 +27,7 @@ export async function storeUserMessage(chatId: string, text: string) {
         .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
     })
   } catch (error) {
-    console.log(error) // TODO
+    console.error(error) // TODO
   }
 }
 
@@ -47,6 +47,6 @@ export async function storeAssistantMessage(chatId: string, uiMessage: UIMessage
         .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
     })
   } catch (error) {
-    console.log(error) // TODO
+    console.error(error) // TODO
   }
 }

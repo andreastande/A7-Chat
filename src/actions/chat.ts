@@ -57,6 +57,6 @@ export async function deleteChat(chatId: string) {
   try {
     await db.delete(chat).where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
   } catch (error) {
-    console.log(error) // TODO
+    console.error(error) // TODO
   }
 }

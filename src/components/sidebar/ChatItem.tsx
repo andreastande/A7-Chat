@@ -57,7 +57,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
     })
   }
 
-  const handleRenameChat = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitRename = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsEditingTitle(false)
     if (newTitle.trim() && chat.title !== newTitle.trim()) {
@@ -75,12 +75,13 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
     }
   }
 
-  const triggerEditTitle = () => {
+  const startEditing = () => {
     setIsEditingTitle(true)
+    // wait a tick then focus & select
     setTimeout(() => {
       inputRef.current?.focus()
       inputRef.current?.select()
-    }, 10)
+    }, 50)
   }
 
   return (
@@ -92,7 +93,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
       >
         {isEditingTitle ? (
           <div className="w-full">
-            <form ref={formRef} onSubmit={handleRenameChat}>
+            <form ref={formRef} onSubmit={submitRename}>
               <input
                 ref={inputRef}
                 autoFocus
@@ -113,7 +114,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
             href={`/chat/${chat.chatId}`}
             className="w-full"
             onClick={(e) => isActive && e.preventDefault()}
-            onDoubleClick={() => isActive && triggerEditTitle()}
+            onDoubleClick={() => isActive && startEditing()}
           >
             <span title={chat.title} className="w-full truncate whitespace-nowrap">
               {chat.title}
@@ -129,7 +130,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
           </SidebarMenuAction>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
-          <DropdownMenuItem className="cursor-pointer" onSelect={triggerEditTitle}>
+          <DropdownMenuItem className="cursor-pointer" onSelect={startEditing}>
             <PencilLine className="text-black dark:text-white" />
             <span>Rename</span>
           </DropdownMenuItem>
