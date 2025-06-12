@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html {
+  scrollbar-gutter: stable;
+}
+
 @theme {
   --color-sky-150: #ccecfe;
 }

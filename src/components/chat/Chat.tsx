@@ -7,7 +7,8 @@ import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
 import { UIMessage } from "ai"
-import { useCallback, useEffect, useRef } from "react"
+import { ChevronDown } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import ChatBubble from "./ChatBubble"
 import ChatInput from "./ChatInput"
 
@@ -18,8 +19,11 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
   const { refetch: refetchChatHistory } = useGetChatHistoryQuery()
 
   const isPendingMessageSent = useRef(false) // need a guard so useEffect is not ran twice in dev environment
+  const containerRef = useRef<HTMLDivElement>(null)
   const lastUserMsgRef = useRef<HTMLDivElement>(null)
   const lastAssistantMsgRef = useRef<HTMLDivElement>(null)
+
+  const [showScrollToBottom, setShowScrollToBottom] = useState(true)
 
   const { status, messages, sendMessage } = useChat({
     messages: initialMessages,
@@ -37,6 +41,25 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     },
     [chatId, sendMessage]
   )
+
+  const scrollToBottom = () => {
+    containerRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
+  }
+
+  useEffect(() => {
+    const container = document.scrollingElement || document.documentElement
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+
+      setShowScrollToBottom(distanceFromBottom > 70)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   useEffect(() => {
     if (status === "submitted") {
@@ -65,7 +88,7 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
 
   return (
     <>
-      <div className="w-full max-w-3xl px-6 pt-14 space-y-14" style={{ paddingBottom }}>
+      <div ref={containerRef} className="w-full max-w-3xl px-6 pt-14 space-y-14" style={{ paddingBottom }}>
         {messages.map((msg, i) => (
           <div
             key={msg.id}
@@ -82,7 +105,13 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
           </div>
         ))}
       </div>
-
+      {showScrollToBottom && (
+        <div className="fixed bottom-38 z-10">
+          <button className="rounded-full p-1 bg-sky-200 border border-sky-300 cursor-pointer" onClick={scrollToBottom}>
+            <ChevronDown className="size-4" />
+          </button>
+        </div>
+      )}
       <ChatInput onSubmit={(text: string) => handleSubmit(text)} />
     </>
   )
