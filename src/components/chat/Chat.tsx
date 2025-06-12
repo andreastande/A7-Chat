@@ -42,8 +42,8 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     [chatId, sendMessage]
   )
 
-  const scrollToBottom = () => {
-    containerRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
+  const scrollToBottom = (behavior: ScrollBehavior) => {
+    containerRef.current?.scrollIntoView({ behavior, block: "end" })
   }
 
   useEffect(() => {
@@ -60,6 +60,16 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  useEffect(() => {
+    const prev = sessionStorage.getItem("lastPath")
+
+    if (prev !== `/chat/${chatId}`) {
+      scrollToBottom("instant")
+    }
+
+    sessionStorage.setItem("lastPath", `/chat/${chatId}`)
+  }, [chatId])
 
   useEffect(() => {
     if (status === "submitted") {
@@ -107,7 +117,10 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
       </div>
       {showScrollToBottom && (
         <div className="fixed bottom-38 z-10">
-          <button className="rounded-full p-1 bg-sky-200 border border-sky-300 cursor-pointer" onClick={scrollToBottom}>
+          <button
+            className="rounded-full p-1 bg-sky-200 border border-sky-300 cursor-pointer"
+            onClick={() => scrollToBottom("smooth")}
+          >
             <ChevronDown className="size-4" />
           </button>
         </div>
