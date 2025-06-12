@@ -7,22 +7,34 @@ import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { and, eq } from "drizzle-orm"
 
-export async function createChat(chatId: string, text: string) {
+export async function createChatPlaceholder(chatId: string) {
   const { userId } = await verifySession()
 
   try {
-    const { text: title } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Generate a concise, topic-focused title for a chat based on the following initial message:\n\n"${text}"\n\nThe title should be short, engaging, and limited to 2-5 words. Do not place quotation marks around the title.`,
-    })
-
     await db.insert(chat).values({
       chatId,
       userId,
-      title,
+      title: "New chat",
     })
   } catch (error) {
-    console.log(error) // TODO
+    console.error(error) // TODO
+  }
+}
+
+export async function updateChatTitle(chatId: string, initialMessage: string) {
+  const { userId } = await verifySession()
+  try {
+    const { text: title } = await generateText({
+      model: openai("gpt-4o-mini"),
+      prompt: `Generate a concise, topic-focused title for a chat based on the following initial message:\n\n"${initialMessage}"\n\nKeep it to 2-5 words, no quotes.`,
+    })
+
+    await db
+      .update(chat)
+      .set({ title })
+      .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+  } catch (error) {
+    console.error(error) // TODO
   }
 }
 
