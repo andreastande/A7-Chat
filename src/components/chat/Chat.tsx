@@ -1,6 +1,8 @@
 "use client"
 
+import { generateChatTitle } from "@/actions/chat"
 import { storeAssistantMessage, storeUserMessage } from "@/actions/message"
+import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { useChat } from "@ai-sdk/react"
 import { UIMessage } from "ai"
@@ -11,6 +13,8 @@ import ChatInput from "./ChatInput"
 export default function Chat({ chatId, initialMessages }: { chatId: string; initialMessages: UIMessage[] }) {
   const pendingMessage = useMessageStore((s) => s.pendingMessage)
   const clearPendingMessage = useMessageStore((s) => s.clearPendingMessage)
+
+  const { refetch: refetchChatHistory } = useGetChatHistoryQuery()
 
   const isPendingMessageSent = useRef(false) // need a guard so useEffect is not ran twice in dev environment
 
@@ -33,9 +37,15 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     if (!pendingMessage || isPendingMessageSent.current) return
     isPendingMessageSent.current = true
 
-    handleSubmit(pendingMessage)
-    clearPendingMessage()
-  }, [pendingMessage, handleSubmit, clearPendingMessage])
+    async function processPendingMessage() {
+      await handleSubmit(pendingMessage!)
+      await generateChatTitle(chatId, pendingMessage!)
+      refetchChatHistory()
+      clearPendingMessage()
+    }
+
+    processPendingMessage()
+  }, [chatId, pendingMessage, handleSubmit, refetchChatHistory, clearPendingMessage])
 
   return (
     <>

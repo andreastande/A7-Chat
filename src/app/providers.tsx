@@ -1,3 +1,4 @@
+import { QueryClientProvider } from "@/components/providers/QueryClientProvider"
 import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { ChatStoreProvider } from "@/stores/chatStoreProvider"
@@ -11,11 +12,13 @@ export async function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <MessageStoreProvider>
-          <ChatStoreProvider>{children}</ChatStoreProvider>
-        </MessageStoreProvider>
-      </SidebarProvider>
+      <QueryClientProvider>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <MessageStoreProvider>
+            <ChatStoreProvider>{children}</ChatStoreProvider>
+          </MessageStoreProvider>
+        </SidebarProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   )
 }

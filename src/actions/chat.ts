@@ -21,7 +21,7 @@ export async function createChatPlaceholder(chatId: string) {
   }
 }
 
-export async function updateChatTitle(chatId: string, initialMessage: string) {
+export async function generateChatTitle(chatId: string, initialMessage: string) {
   const { userId } = await verifySession()
   try {
     const { text: title } = await generateText({
@@ -31,7 +31,20 @@ export async function updateChatTitle(chatId: string, initialMessage: string) {
 
     await db
       .update(chat)
-      .set({ title })
+      .set({ title, updatedAt: chat.updatedAt })
+      .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+  } catch (error) {
+    console.error(error) // TODO
+  }
+}
+
+export async function renameChatTitle(chatId: string, newTitle: string) {
+  const { userId } = await verifySession()
+
+  try {
+    await db
+      .update(chat)
+      .set({ title: newTitle.trim(), updatedAt: chat.updatedAt })
       .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
   } catch (error) {
     console.error(error) // TODO

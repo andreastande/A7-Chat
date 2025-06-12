@@ -1,6 +1,6 @@
 "use client"
 
-import { createChatPlaceholder, updateChatTitle } from "@/actions/chat"
+import { createChatPlaceholder } from "@/actions/chat"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
@@ -30,11 +30,9 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
 
     if (pathname === "/") {
       setPendingMessage(msg)
+
       const chatId = crypto.randomUUID()
-
-      await createChatPlaceholder(chatId) // 1️⃣ Fast: insert placeholder "New chat"
-      updateChatTitle(chatId, msg) // 2️⃣ Background: update the title later, don't block UX
-
+      await createChatPlaceholder(chatId) // Insert placeholder "New chat". Generating title takes a long time, can do this after navigation
       router.push(`/chat/${chatId}`)
     }
   }

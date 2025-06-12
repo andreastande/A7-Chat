@@ -1,10 +1,11 @@
-import { deleteChat as deleteChatFromDb } from "@/actions/chat"
+import { deleteChat as deleteChatFromDb, renameChatTitle as renameChatTitleInDb } from "@/actions/chat"
+import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useChatStore } from "@/stores/chatStoreProvider"
 import { ChatWithCategory } from "@/types/chat"
 import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
@@ -13,9 +14,33 @@ import ConfirmDeleteChatDialog from "./ConfirmDeleteChatDialog"
 export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCategory; currentChatId?: string }) {
   const router = useRouter()
   const optimisticDeleteChat = useChatStore((s) => s.deleteChat)
+  const optimisticRenameChatTitle = useChatStore((s) => s.renameChatTitle)
+
+  const { refetch: refetchChatHistory } = useGetChatHistoryQuery()
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [newTitle, setNewTitle] = useState(chat.title)
   const isActive = currentChatId === chat.chatId
+
+  useEffect(() => {
+    if (!isEditingTitle) return
+
+    function handleClickOutside(e: MouseEvent) {
+      if (formRef.current && !formRef.current.contains(e.target as Node)) {
+        setNewTitle(chat.title)
+        setIsEditingTitle(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isEditingTitle, chat.title])
 
   const handleDeleteChat = () => {
     optimisticDeleteChat(chat.chatId)
@@ -23,10 +48,39 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
       loading: "Deleting chat…",
       success: `Chat "${chat.title}" deleted!`,
       error: "Couldn't delete chat.",
+      finally: () => {
+        refetchChatHistory()
+        if (isActive) {
+          router.push("/")
+        }
+      },
     })
-    if (isActive) {
-      router.push("/")
+  }
+
+  const handleRenameChat = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsEditingTitle(false)
+    if (newTitle.trim() && chat.title !== newTitle.trim()) {
+      optimisticRenameChatTitle(chat.chatId, newTitle.trim())
+      toast.promise(renameChatTitleInDb(chat.chatId, newTitle.trim()), {
+        loading: "Renaming chat…",
+        success: `Chat "${chat.title}" renamed to ${newTitle}!`,
+        error: "Couldn't rename chat.",
+        finally: () => {
+          refetchChatHistory()
+        },
+      })
+    } else {
+      setNewTitle(chat.title)
     }
+  }
+
+  const triggerEditTitle = () => {
+    setIsEditingTitle(true)
+    setTimeout(() => {
+      inputRef.current?.focus()
+      inputRef.current?.select()
+    }, 10)
   }
 
   return (
@@ -36,7 +90,36 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
         isActive={isActive}
         className={`group-hover/menu-item:bg-sidebar-accent ${menuOpen && "bg-sidebar-accent"}`}
       >
-        <Link href={`/chat/${chat.chatId}`}>{chat.title}</Link>
+        {isEditingTitle ? (
+          <div className="w-full">
+            <form ref={formRef} onSubmit={handleRenameChat}>
+              <input
+                ref={inputRef}
+                autoFocus
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    setNewTitle(chat.title)
+                    setIsEditingTitle(false)
+                  }
+                }}
+                className="outline-none w-full"
+              />
+            </form>
+          </div>
+        ) : (
+          <Link
+            href={`/chat/${chat.chatId}`}
+            className="w-full"
+            onClick={(e) => isActive && e.preventDefault()}
+            onDoubleClick={() => isActive && triggerEditTitle()}
+          >
+            <span title={chat.title} className="w-full truncate whitespace-nowrap">
+              {chat.title}
+            </span>
+          </Link>
+        )}
       </SidebarMenuButton>
 
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -45,8 +128,8 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
             <MoreHorizontal />
           </SidebarMenuAction>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start">
-          <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuContent side="right" align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
+          <DropdownMenuItem className="cursor-pointer" onSelect={triggerEditTitle}>
             <PencilLine className="text-black dark:text-white" />
             <span>Rename</span>
           </DropdownMenuItem>
