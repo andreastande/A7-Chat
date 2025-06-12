@@ -23,7 +23,7 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
   const lastUserMsgRef = useRef<HTMLDivElement>(null)
   const lastAssistantMsgRef = useRef<HTMLDivElement>(null)
 
-  const [showScrollToBottom, setShowScrollToBottom] = useState(true)
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false)
 
   const { status, messages, sendMessage } = useChat({
     messages: initialMessages,
