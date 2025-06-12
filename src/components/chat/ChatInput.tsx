@@ -31,7 +31,7 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
     if (pathname === "/") {
       setPendingMessage(msg)
       const chatId = crypto.randomUUID()
-      await createChat(chatId, msg)
+      await createChat(chatId, msg) // TODO: Very slow!!!!
       router.push(`/chat/${chatId}`)
     }
   }

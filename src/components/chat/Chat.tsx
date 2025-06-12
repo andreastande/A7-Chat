@@ -17,14 +17,14 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
   const { messages, sendMessage } = useChat({
     messages: initialMessages,
     onFinish: async ({ message }) => {
-      await storeAssistantMessage(chatId, message) // try-catch?
+      await storeAssistantMessage(chatId, message)
     },
   })
 
   const handleSubmit = useCallback(
     async (text: string) => {
       sendMessage({ text })
-      await storeUserMessage(chatId, text) // try-catch?
+      await storeUserMessage(chatId, text)
     },
     [chatId, sendMessage]
   )
