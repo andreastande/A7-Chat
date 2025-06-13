@@ -75,7 +75,7 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
             <button
               type="submit"
               disabled={!draftMessage.trim()}
-              className="cursor-pointer bg-sky-400 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
+              className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
             >
               <ArrowUp className="size-5" />
             </button>

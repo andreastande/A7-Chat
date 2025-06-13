@@ -1,6 +1,7 @@
 import { deleteChat as deleteChatFromDb, renameChatTitle as renameChatTitleInDb } from "@/actions/chat"
 import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useChatStore } from "@/stores/chatStoreProvider"
+import { useSearchStore } from "@/stores/searchStoreProvider"
 import { ChatWithCategory } from "@/types/chat"
 import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react"
 import Link from "next/link"
@@ -13,6 +14,7 @@ import ConfirmDeleteChatDialog from "./ConfirmDeleteChatDialog"
 
 export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCategory; currentChatId?: string }) {
   const router = useRouter()
+  const setSearchTerm = useSearchStore((s) => s.setSearchTerm)
   const optimisticDeleteChat = useChatStore((s) => s.deleteChat)
   const optimisticRenameChatTitle = useChatStore((s) => s.renameChatTitle)
 
@@ -113,7 +115,13 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
           <Link
             href={`/chat/${chat.chatId}`}
             className="w-full"
-            onClick={(e) => isActive && e.preventDefault()}
+            onClick={(e) => {
+              if (isActive) {
+                e.preventDefault()
+              } else {
+                setSearchTerm("") // Clear search on navigation
+              }
+            }}
             onDoubleClick={() => isActive && startEditing()}
           >
             <span title={chat.title} className="w-full truncate whitespace-nowrap">
@@ -124,7 +132,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
       </SidebarMenuButton>
 
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-        <DropdownMenuTrigger asChild className="cursor-pointer hover:bg-zinc-200 dark:hover:bg-zinc-700">
+        <DropdownMenuTrigger asChild className="cursor-pointer hover:bg-sky-200 dark:hover:bg-zinc-700">
           <SidebarMenuAction showOnHover>
             <MoreHorizontal />
           </SidebarMenuAction>
