@@ -22,7 +22,7 @@ export default async function EmptyChat() {
     .from(pinnedModels)
     .where(eq(pinnedModels.userId, userId))
 
-  const pinnedModelNames = (pinnedModelsRow[0]?.models ?? []) as string[]
+  const pinnedModelNames = (pinnedModelsRow[0]?.models ?? ["2.5 Flash", "4o", "3.7 Sonnet"]) as string[]
   const initialPinnedModels = pinnedModelNames
     .map((name) => models.find((model) => model.name === name))
     .filter((m): m is (typeof models)[number] => Boolean(m)) // just to be safe, in case names are changed in the future
