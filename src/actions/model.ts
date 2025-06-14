@@ -3,40 +3,27 @@
 import { db } from "@/db"
 import { pinnedModels } from "@/db/schema"
 import { verifySession } from "@/lib/dal"
-import { and, eq } from "drizzle-orm"
+import { IModel } from "@/types/model"
+import { eq } from "drizzle-orm"
 
-export async function addPinnedModel(modelId: string, position: number) {
+export async function updatePinnedModels(models: IModel[]) {
   const { userId } = await verifySession()
 
-  try {
-    await db.insert(pinnedModels).values({
-      modelId,
-      userId,
-      position,
-    })
-  } catch (error) {
-    console.error(error) // TODO
-  }
-}
-
-export async function removePinnedModel(modelId: string) {
-  const { userId } = await verifySession()
+  const modelNames = models.map((model) => model.name)
 
   try {
-    await db.delete(pinnedModels).where(and(eq(pinnedModels.modelId, modelId), eq(pinnedModels.userId, userId)))
-  } catch (error) {
-    console.error(error) // TODO
-  }
-}
+    const existing = await db.select().from(pinnedModels).where(eq(pinnedModels.userId, userId))
 
-export async function updatePinnedModelPosition(modelId: string, position: number) {
-  const { userId } = await verifySession()
-
-  try {
-    await db
-      .update(pinnedModels)
-      .set({ position })
-      .where(and(eq(pinnedModels.modelId, modelId), eq(pinnedModels.userId, userId)))
+    if (existing.length > 0) {
+      // Row exists — update
+      await db.update(pinnedModels).set({ models: modelNames }).where(eq(pinnedModels.userId, userId))
+    } else {
+      // No row — insert
+      await db.insert(pinnedModels).values({
+        userId,
+        models: modelNames,
+      })
+    }
   } catch (error) {
     console.log(error) // TODO
   }

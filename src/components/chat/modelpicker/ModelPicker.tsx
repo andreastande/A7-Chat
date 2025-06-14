@@ -1,3 +1,4 @@
+import { updatePinnedModels } from "@/actions/model"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent } from "@/components/ui/popover"
@@ -51,6 +52,14 @@ export default function ModelPicker({
     localStorage.setItem("modelPicker-openAccordions", JSON.stringify(openAccordions))
   }, [openAccordions])
 
+  const togglePinnedModel = async (model: IModel) => {
+    const isPinned = pinnedModels.some((m) => m.name === model.name)
+    const newPinnedModels = isPinned ? pinnedModels.filter((m) => m.name !== model.name) : [...pinnedModels, model]
+
+    setPinnedModels(newPinnedModels)
+    await updatePinnedModels(newPinnedModels)
+  }
+
   return (
     <Popover open={isModelPickerOpen} onOpenChange={(open) => handleCloseModelPicker(open)}>
       <PopoverTrigger
@@ -102,11 +111,7 @@ export default function ModelPicker({
                       <Model
                         key={model.name}
                         model={model}
-                        isPinned
-                        pinnedModelsLength={pinnedModels.length}
-                        onTogglePin={(model) => {
-                          setPinnedModels((prev) => prev.filter((m) => m.name !== model.name))
-                        }}
+                        onTogglePin={(model) => togglePinnedModel(model)}
                         selectedModel={selectedModel}
                         setSelectedModel={setSelectedModel}
                         closeModelPicker={() => handleCloseModelPicker(false)}
@@ -128,10 +133,7 @@ export default function ModelPicker({
                     <Model
                       key={model.name}
                       model={model}
-                      pinnedModelsLength={pinnedModels.length}
-                      onTogglePin={(model) => {
-                        setPinnedModels((prev) => [...prev, model])
-                      }}
+                      onTogglePin={(model) => togglePinnedModel(model)}
                       selectedModel={selectedModel}
                       setSelectedModel={setSelectedModel}
                       closeModelPicker={() => handleCloseModelPicker(false)}

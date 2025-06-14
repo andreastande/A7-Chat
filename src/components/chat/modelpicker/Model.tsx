@@ -1,5 +1,4 @@
 import { updateChatModel } from "@/actions/chat"
-import { addPinnedModel, removePinnedModel } from "@/actions/model"
 import { IModel } from "@/types/model"
 import Cookies from "js-cookie"
 import { Pin } from "lucide-react"
@@ -8,23 +7,13 @@ import { usePathname } from "next/navigation"
 
 interface ModelProps {
   model: IModel
-  isPinned?: boolean
-  pinnedModelsLength: number
   selectedModel: IModel
   onTogglePin: (model: IModel) => void
   setSelectedModel: (model: IModel) => void
   closeModelPicker: () => void
 }
 
-export default function Model({
-  model,
-  isPinned,
-  pinnedModelsLength,
-  selectedModel,
-  onTogglePin,
-  setSelectedModel,
-  closeModelPicker,
-}: ModelProps) {
+export default function Model({ model, selectedModel, onTogglePin, setSelectedModel, closeModelPicker }: ModelProps) {
   const pathname = usePathname()
 
   const handleSelectModel = async () => {
@@ -33,16 +22,6 @@ export default function Model({
     closeModelPicker()
     if (pathname.startsWith("/chat/")) {
       await updateChatModel(pathname.split("/")[2], model.name)
-    }
-  }
-
-  const handleTogglePin = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onTogglePin(model)
-    if (isPinned) {
-      await removePinnedModel(model.name)
-    } else {
-      await addPinnedModel(model.name, pinnedModelsLength + 1)
     }
   }
 
@@ -64,7 +43,10 @@ export default function Model({
           absolute -right-1 -top-1 p-1 bg-sky-200 border border-sky-300 rounded-md
           hover:bg-sky-300 hover:border-sky-400 invisible group-hover:visible
         `}
-        onClick={(e) => handleTogglePin(e)}
+        onClick={(e) => {
+          e.stopPropagation()
+          onTogglePin(model)
+        }}
       >
         <Pin className="size-4" />
       </div>

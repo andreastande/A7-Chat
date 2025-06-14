@@ -1,4 +1,4 @@
-import { boolean, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -93,9 +93,8 @@ export const message = pgTable("message", {
 })
 
 export const pinnedModels = pgTable("pinned_models", {
-  modelId: text("model_id").primaryKey(),
   userId: text("user_id")
-    .notNull()
+    .primaryKey()
     .references(() => user.id, { onDelete: "cascade" }),
-  position: integer("position").notNull(),
+  models: jsonb("models").notNull(),
 })

@@ -41,18 +41,17 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
 
   const initialModel = models.find((model) => model.name === (chatRow[0]?.model ?? "2.5 Flash"))!
 
-  const pinnedModelsRows = await db
+  const pinnedModelsRow = await db
     .select({
-      modelId: pinnedModels.modelId,
-      position: pinnedModels.position,
+      models: pinnedModels.models,
     })
     .from(pinnedModels)
     .where(eq(pinnedModels.userId, userId))
-    .orderBy(pinnedModels.position)
 
-  const initialPinnedModels = models.filter((model) =>
-    pinnedModelsRows.some((pinnedModel) => pinnedModel.modelId === model.name)
-  )
+  const pinnedModelNames = (pinnedModelsRow[0]?.models ?? []) as string[]
+  const initialPinnedModels = pinnedModelNames
+    .map((name) => models.find((model) => model.name === name))
+    .filter((m): m is (typeof models)[number] => Boolean(m)) // just to be safe, in case names are changed in the future
 
   return (
     <>
