@@ -17,9 +17,10 @@ interface ChatProps {
   chatId: string
   initialMessages: UIMessage[]
   initialModel: IModel
+  initialPinnedModels: IModel[]
 }
 
-export default function Chat({ chatId, initialMessages, initialModel }: ChatProps) {
+export default function Chat({ chatId, initialMessages, initialModel, initialPinnedModels }: ChatProps) {
   const pendingMessage = useMessageStore((s) => s.pendingMessage)
   const clearPendingMessage = useMessageStore((s) => s.clearPendingMessage)
   const optimisticRenameChatTitle = useChatStore((s) => s.renameChatTitle)
@@ -46,7 +47,7 @@ export default function Chat({ chatId, initialMessages, initialModel }: ChatProp
         { text },
         {
           body: {
-            model: model.APIName,
+            model,
           },
         }
       )
@@ -138,7 +139,11 @@ export default function Chat({ chatId, initialMessages, initialModel }: ChatProp
           </button>
         </div>
       )}
-      <ChatInput onSubmit={(text: string, model: IModel) => handleSubmit(text, model)} initialModel={initialModel} />
+      <ChatInput
+        initialModel={initialModel}
+        initialPinnedModels={initialPinnedModels}
+        onSubmit={(text: string, model: IModel) => handleSubmit(text, model)}
+      />
     </>
   )
 }

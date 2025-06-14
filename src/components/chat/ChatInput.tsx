@@ -3,7 +3,8 @@
 import { createChatPlaceholder } from "@/actions/chat"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { IModel } from "@/types/model"
-import { ArrowUp, Paperclip } from "lucide-react"
+import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
@@ -11,10 +12,11 @@ import ModelPicker from "./modelpicker/ModelPicker"
 
 type ChatInputProps = {
   initialModel: IModel
+  initialPinnedModels: IModel[]
   onSubmit?: (text: string, model: IModel) => void
 }
 
-export default function ChatInput({ initialModel, onSubmit }: ChatInputProps) {
+export default function ChatInput({ initialModel, initialPinnedModels, onSubmit }: ChatInputProps) {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -67,8 +69,20 @@ export default function ChatInput({ initialModel, onSubmit }: ChatInputProps) {
           className="w-full resize-none whitespace-break-spaces focus:outline-none"
         />
         <div className="mt-2 flex items-center justify-between">
-          <ModelPicker selectedModel={selectedModel} setSelectedModel={(model: IModel) => setSelectedModel(model)}>
+          <ModelPicker
+            initialPinnedModels={initialPinnedModels}
+            selectedModel={selectedModel}
+            setSelectedModel={(model: IModel) => setSelectedModel(model)}
+          >
+            <div className="relative size-4">
+              <Image
+                src={`/images/${selectedModel.provider.toLowerCase()}/logo_dark-blue.png`}
+                alt="Provider logo"
+                fill
+              />
+            </div>
             <span className="text-sm">{selectedModel.name}</span>
+            <ChevronDown className="size-4" />
           </ModelPicker>
 
           <div className="flex items-center gap-2">

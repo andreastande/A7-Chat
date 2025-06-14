@@ -2,7 +2,7 @@ import Chat from "@/components/chat/Chat"
 import ChatLayout from "@/components/ChatLayout"
 import { AppSidebar } from "@/components/sidebar/AppSidebar"
 import { db } from "@/db"
-import { chat, message } from "@/db/schema"
+import { chat, message, pinnedModels } from "@/db/schema"
 import { models } from "@/lib/constants"
 import { decryptUIMessage } from "@/lib/crypto"
 import { verifySession } from "@/lib/dal"
@@ -41,6 +41,19 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
 
   const initialModel = models.find((model) => model.name === (chatRow[0]?.model ?? "2.5 Flash"))!
 
+  const pinnedModelsRows = await db
+    .select({
+      modelId: pinnedModels.modelId,
+      position: pinnedModels.position,
+    })
+    .from(pinnedModels)
+    .where(eq(pinnedModels.userId, userId))
+    .orderBy(pinnedModels.position)
+
+  const initialPinnedModels = models.filter((model) =>
+    pinnedModelsRows.some((pinnedModel) => pinnedModel.modelId === model.name)
+  )
+
   return (
     <>
       {invalidChat && (
@@ -53,7 +66,12 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
       <AppSidebar chatId={chatId} />
       <ChatLayout>
         <main className="w-full flex justify-center">
-          <Chat chatId={chatId} initialMessages={initialMessages} initialModel={initialModel} />
+          <Chat
+            chatId={chatId}
+            initialMessages={initialMessages}
+            initialModel={initialModel}
+            initialPinnedModels={initialPinnedModels}
+          />
         </main>
       </ChatLayout>
     </>
