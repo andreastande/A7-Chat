@@ -7,7 +7,7 @@ export function AppSidebar({ chatId }: { chatId?: string }) {
     <Sidebar>
       <AppSidebarHeader />
       <AppSidebarContent currentChatId={chatId} />
-      <SidebarFooter className="h-30 border-t border-sky-200" />
+      <SidebarFooter className="h-30 border-t border-sky-200 dark:border-zinc-500" />
       <SidebarRail />
     </Sidebar>
   )

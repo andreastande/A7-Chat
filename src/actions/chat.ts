@@ -7,7 +7,7 @@ import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { and, eq } from "drizzle-orm"
 
-export async function createChatPlaceholder(chatId: string) {
+export async function createChatPlaceholder(chatId: string, model: string) {
   const { userId } = await verifySession()
 
   try {
@@ -15,6 +15,7 @@ export async function createChatPlaceholder(chatId: string) {
       chatId,
       userId,
       title: "New chat",
+      model,
     })
   } catch (error) {
     console.error(error) // TODO
@@ -56,6 +57,19 @@ export async function deleteChat(chatId: string) {
 
   try {
     await db.delete(chat).where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+  } catch (error) {
+    console.error(error) // TODO
+  }
+}
+
+export async function updateChatModel(chatId: string, model: string) {
+  const { userId } = await verifySession()
+
+  try {
+    await db
+      .update(chat)
+      .set({ model, updatedAt: chat.updatedAt })
+      .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
   } catch (error) {
     console.error(error) // TODO
   }

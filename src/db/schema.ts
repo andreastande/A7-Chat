@@ -62,6 +62,7 @@ export const chat = pgTable("chat", {
   chatId: text("chat_id").primaryKey(),
   userId: text("user_id").notNull(),
   title: text("title").notNull(),
+  model: text("model").notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),

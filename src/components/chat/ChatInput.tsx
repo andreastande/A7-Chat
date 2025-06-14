@@ -2,15 +2,19 @@
 
 import { createChatPlaceholder } from "@/actions/chat"
 import { useMessageStore } from "@/stores/messageStoreProvider"
-import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
+import { IModel } from "@/types/model"
+import { ArrowUp, Paperclip } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
+import ModelPicker from "./modelpicker/ModelPicker"
 
 type ChatInputProps = {
-  onSubmit?: (text: string) => void
+  initialModel: IModel
+  onSubmit?: (text: string, model: IModel) => void
 }
 
-export default function ChatInput({ onSubmit }: ChatInputProps) {
+export default function ChatInput({ initialModel, onSubmit }: ChatInputProps) {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -19,6 +23,8 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
   const clearDraftMessage = useMessageStore((s) => s.clearDraftMessage)
   const setPendingMessage = useMessageStore((s) => s.setPendingMessage)
 
+  const [selectedModel, setSelectedModel] = useState<IModel>(initialModel)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -26,13 +32,13 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
     if (!msg) return
 
     clearDraftMessage()
-    onSubmit?.(msg)
+    onSubmit?.(msg, selectedModel)
 
     if (pathname === "/") {
       setPendingMessage(msg)
 
       const chatId = crypto.randomUUID()
-      await createChatPlaceholder(chatId) // Insert placeholder "New chat". Generating title takes a long time, can do this after navigation
+      await createChatPlaceholder(chatId, selectedModel.name) // Insert placeholder "New chat". Generating title takes a long time, can do this after navigation
       router.push(`/chat/${chatId}`)
     }
   }
@@ -61,13 +67,10 @@ export default function ChatInput({ onSubmit }: ChatInputProps) {
           className="w-full resize-none whitespace-break-spaces focus:outline-none"
         />
         <div className="mt-2 flex items-center justify-between">
-          <button
-            type="button"
-            className="flex items-center cursor-pointer gap-2 rounded-lg p-2 hover:bg-sky-150 -translate-x-1.5"
-          >
-            <span className="text-sm">4.1 Nano</span>
-            <ChevronDown className="size-4" />
-          </button>
+          <ModelPicker selectedModel={selectedModel} setSelectedModel={(model: IModel) => setSelectedModel(model)}>
+            <span className="text-sm">{selectedModel.name}</span>
+          </ModelPicker>
+
           <div className="flex items-center gap-2">
             <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150">
               <Paperclip className="size-4" />

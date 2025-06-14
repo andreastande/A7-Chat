@@ -5,6 +5,7 @@ import { storeAssistantMessage, storeUserMessage } from "@/actions/message"
 import { useDynamicPadding } from "@/hooks/useDynamicPadding"
 import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useMessageStore } from "@/stores/messageStoreProvider"
+import { IModel } from "@/types/model"
 import { useChat } from "@ai-sdk/react"
 import { UIMessage } from "ai"
 import { ChevronDown } from "lucide-react"
@@ -12,7 +13,13 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import ChatBubble from "./ChatBubble"
 import ChatInput from "./ChatInput"
 
-export default function Chat({ chatId, initialMessages }: { chatId: string; initialMessages: UIMessage[] }) {
+interface ChatProps {
+  chatId: string
+  initialMessages: UIMessage[]
+  initialModel: IModel
+}
+
+export default function Chat({ chatId, initialMessages, initialModel }: ChatProps) {
   const pendingMessage = useMessageStore((s) => s.pendingMessage)
   const clearPendingMessage = useMessageStore((s) => s.clearPendingMessage)
 
@@ -35,8 +42,15 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
   const paddingBottom = useDynamicPadding(messages, status, lastUserMsgRef, lastAssistantMsgRef)
 
   const handleSubmit = useCallback(
-    async (text: string) => {
-      sendMessage({ text })
+    async (text: string, model: IModel) => {
+      sendMessage(
+        { text },
+        {
+          body: {
+            model: model.APIName,
+          },
+        }
+      )
       await storeUserMessage(chatId, text)
     },
     [chatId, sendMessage]
@@ -82,14 +96,14 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
     isPendingMessageSent.current = true
 
     async function processPendingMessage() {
-      await handleSubmit(pendingMessage!)
+      await handleSubmit(pendingMessage!, initialModel)
       await generateChatTitle(chatId, pendingMessage!)
       refetchChatHistory()
       clearPendingMessage()
     }
 
     processPendingMessage()
-  }, [chatId, pendingMessage, handleSubmit, refetchChatHistory, clearPendingMessage])
+  }, [chatId, initialModel, pendingMessage, handleSubmit, refetchChatHistory, clearPendingMessage])
 
   const lastUserIdx = messages.map((m) => m.role).lastIndexOf("user")
   const lastAssistantIdx = messages.map((m) => m.role).lastIndexOf("assistant")
@@ -125,7 +139,7 @@ export default function Chat({ chatId, initialMessages }: { chatId: string; init
           </button>
         </div>
       )}
-      <ChatInput onSubmit={(text: string) => handleSubmit(text)} />
+      <ChatInput onSubmit={(text: string, model: IModel) => handleSubmit(text, model)} initialModel={initialModel} />
     </>
   )
 }

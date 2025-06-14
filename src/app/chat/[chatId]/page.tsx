@@ -3,6 +3,7 @@ import ChatLayout from "@/components/ChatLayout"
 import { AppSidebar } from "@/components/sidebar/AppSidebar"
 import { db } from "@/db"
 import { chat, message } from "@/db/schema"
+import { models } from "@/lib/constants"
 import { decryptUIMessage } from "@/lib/crypto"
 import { verifySession } from "@/lib/dal"
 import { UIMessage } from "ai"
@@ -17,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
   const { userId } = await verifySession()
 
   const chatRow = await db
-    .select({ userId: chat.userId })
+    .select({ userId: chat.userId, model: chat.model })
     .from(chat)
     .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
     .limit(1)
@@ -38,6 +39,8 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
 
   const initialMessages = messageRows.map(({ uiMessage }) => decryptUIMessage(uiMessage as UIMessage))
 
+  const initialModel = models.find((model) => model.name === chatRow[0].model)!
+
   return (
     <>
       {invalidChat && (
@@ -50,7 +53,7 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
       <AppSidebar chatId={chatId} />
       <ChatLayout>
         <main className="w-full flex justify-center">
-          <Chat chatId={chatId} initialMessages={initialMessages} />
+          <Chat chatId={chatId} initialMessages={initialMessages} initialModel={initialModel} />
         </main>
       </ChatLayout>
     </>

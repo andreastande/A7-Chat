@@ -2,6 +2,7 @@ import RouteChangeTracker from "@/components/RouteChangeTracker"
 import { Toaster } from "@/components/ui/sonner"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import "overlayscrollbars/overlayscrollbars.css"
 import "./globals.css"
 import { Providers } from "./providers"
 
