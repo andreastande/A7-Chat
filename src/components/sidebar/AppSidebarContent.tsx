@@ -1,16 +1,20 @@
 "use client"
 
-import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { categorizeChats } from "@/lib/chatCategorizer"
 import { useChatStore } from "@/stores/chatStoreProvider"
 import { useSearchStore } from "@/stores/searchStoreProvider"
+import { Chat } from "@/types/chat"
 import { useEffect } from "react"
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "../ui/sidebar"
 import ChatItem from "./ChatItem"
 
-export default function AppSidebarContent({ currentChatId }: { currentChatId: string | undefined }) {
-  const { data: initialChats } = useGetChatHistoryQuery()
-
+export default function AppSidebarContent({
+  currentChatId,
+  initialChats,
+}: {
+  currentChatId: string | undefined
+  initialChats: Chat[]
+}) {
   const setChats = useChatStore((s) => s.setChats)
   const chats = useChatStore((s) => s.chats)
   const searchTerm = useSearchStore((s) => s.searchTerm)
@@ -19,7 +23,11 @@ export default function AppSidebarContent({ currentChatId }: { currentChatId: st
     setChats(initialChats ?? [])
   }, [initialChats, setChats])
 
-  const filteredChats = chats.filter((chat) => chat.title.toLowerCase().includes(searchTerm.toLowerCase()))
+  const effectiveChats = chats.length > 0 ? chats : initialChats
+
+  const filteredChats = effectiveChats
+    .filter((chat) => chat.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((chat) => !chat.usesDefaultTitle)
 
   const { chatsWithCategory, categories } = categorizeChats(filteredChats)
 

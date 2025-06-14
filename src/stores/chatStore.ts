@@ -8,7 +8,6 @@ export type ChatState = {
 export type ChatActions = {
   setChats: (chats: Chat[]) => void
   deleteChat: (chatId: string) => void
-  addChat: (chatId: string, title: string) => void
   renameChatTitle: (chatId: string, newTitle: string) => void
 }
 
@@ -30,13 +29,9 @@ export const createChatStore = (initState: ChatState = defaultInitState) => {
       set({
         chats: get().chats.filter((c) => c.chatId !== chatId),
       }),
-    addChat: (chatId, title) =>
-      set({
-        chats: [{ chatId, title, updatedAt: new Date() }, ...get().chats],
-      }),
     renameChatTitle: (chatId, newTitle) =>
       set({
-        chats: get().chats.map((c) => (c.chatId === chatId ? { ...c, title: newTitle } : c)),
+        chats: get().chats.map((c) => (c.chatId === chatId ? { ...c, title: newTitle, usesDefaultTitle: false } : c)),
       }),
   }))
 }

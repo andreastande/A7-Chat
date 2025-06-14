@@ -1,5 +1,4 @@
 import { deleteChat as deleteChatFromDb, renameChatTitle as renameChatTitleInDb } from "@/actions/chat"
-import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
 import { useChatStore } from "@/stores/chatStoreProvider"
 import { useSearchStore } from "@/stores/searchStoreProvider"
 import { ChatWithCategory } from "@/types/chat"
@@ -17,8 +16,6 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
   const setSearchTerm = useSearchStore((s) => s.setSearchTerm)
   const optimisticDeleteChat = useChatStore((s) => s.deleteChat)
   const optimisticRenameChatTitle = useChatStore((s) => s.renameChatTitle)
-
-  const { refetch: refetchChatHistory } = useGetChatHistoryQuery()
 
   const formRef = useRef<HTMLFormElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -51,7 +48,6 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
       success: `Chat "${chat.title}" deleted!`,
       error: "Couldn't delete chat.",
       finally: () => {
-        refetchChatHistory()
         if (isActive) {
           router.push("/")
         }
@@ -68,9 +64,6 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
         loading: "Renaming chat…",
         success: `Chat "${chat.title}" renamed to ${newTitle}!`,
         error: "Couldn't rename chat.",
-        finally: () => {
-          refetchChatHistory()
-        },
       })
     } else {
       setNewTitle(chat.title)
@@ -91,7 +84,7 @@ export default function ChatItem({ chat, currentChatId }: { chat: ChatWithCatego
       <SidebarMenuButton
         asChild
         isActive={isActive}
-        className={`group-hover/menu-item:bg-sidebar-accent ${menuOpen && "bg-sidebar-accent"}`}
+        className={`group-hover/menu-item:bg-sidebar-accent ${(menuOpen || isEditingTitle) && "bg-sidebar-accent"}`}
       >
         {isEditingTitle ? (
           <div className="w-full">

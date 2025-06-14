@@ -3,7 +3,7 @@
 import { generateChatTitle } from "@/actions/chat"
 import { storeAssistantMessage, storeUserMessage } from "@/actions/message"
 import { useDynamicPadding } from "@/hooks/useDynamicPadding"
-import { useGetChatHistoryQuery } from "@/hooks/useGetChatHistoryQuery"
+import { useChatStore } from "@/stores/chatStoreProvider"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { IModel } from "@/types/model"
 import { useChat } from "@ai-sdk/react"
@@ -22,8 +22,7 @@ interface ChatProps {
 export default function Chat({ chatId, initialMessages, initialModel }: ChatProps) {
   const pendingMessage = useMessageStore((s) => s.pendingMessage)
   const clearPendingMessage = useMessageStore((s) => s.clearPendingMessage)
-
-  const { refetch: refetchChatHistory } = useGetChatHistoryQuery()
+  const optimisticRenameChatTitle = useChatStore((s) => s.renameChatTitle)
 
   const isPendingMessageSent = useRef(false) // need a guard so useEffect is not ran twice in dev environment
   const containerRef = useRef<HTMLDivElement>(null)
@@ -97,13 +96,13 @@ export default function Chat({ chatId, initialMessages, initialModel }: ChatProp
 
     async function processPendingMessage() {
       await handleSubmit(pendingMessage!, initialModel)
-      await generateChatTitle(chatId, pendingMessage!)
-      refetchChatHistory()
+      const updatedTitle = await generateChatTitle(chatId, pendingMessage!)
+      optimisticRenameChatTitle(chatId, updatedTitle)
       clearPendingMessage()
     }
 
     processPendingMessage()
-  }, [chatId, initialModel, pendingMessage, handleSubmit, refetchChatHistory, clearPendingMessage])
+  }, [chatId, initialModel, pendingMessage, handleSubmit, optimisticRenameChatTitle, clearPendingMessage])
 
   const lastUserIdx = messages.map((m) => m.role).lastIndexOf("user")
   const lastAssistantIdx = messages.map((m) => m.role).lastIndexOf("assistant")

@@ -24,6 +24,7 @@ export async function createChatPlaceholder(chatId: string, model: string) {
 
 export async function generateChatTitle(chatId: string, initialMessage: string) {
   const { userId } = await verifySession()
+
   try {
     const { text: title } = await generateText({
       model: openai("gpt-4o-mini"),
@@ -32,10 +33,13 @@ export async function generateChatTitle(chatId: string, initialMessage: string) 
 
     await db
       .update(chat)
-      .set({ title, updatedAt: chat.updatedAt })
+      .set({ title, updatedAt: chat.updatedAt, usesDefaultTitle: false })
       .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+
+    return title
   } catch (error) {
     console.error(error) // TODO
+    throw new Error("Failed to generate chat title")
   }
 }
 

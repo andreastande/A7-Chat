@@ -39,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
 
   const initialMessages = messageRows.map(({ uiMessage }) => decryptUIMessage(uiMessage as UIMessage))
 
-  const initialModel = models.find((model) => model.name === chatRow[0].model)!
+  const initialModel = models.find((model) => model.name === (chatRow[0]?.model ?? "2.5 Flash"))!
 
   return (
     <>
