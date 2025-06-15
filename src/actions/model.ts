@@ -25,6 +25,6 @@ export async function updatePinnedModels(models: IModel[]) {
       })
     }
   } catch (error) {
-    console.log(error) // TODO
+    console.error(error) // TODO
   }
 }

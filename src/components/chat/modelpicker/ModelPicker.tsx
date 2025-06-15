@@ -1,14 +1,14 @@
 import { updatePinnedModels } from "@/actions/model"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { models } from "@/lib/constants"
 import { IModel } from "@/types/model"
-import { PopoverTrigger } from "@radix-ui/react-popover"
-import { ChevronDownIcon, Filter, Pin, Search } from "lucide-react"
+import { ChevronDownIcon, Filter, List, Pin, Search } from "lucide-react"
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react"
 import React, { useEffect, useState } from "react"
 import Model from "./Model"
+import OrderPinnedMenu from "./OrderPinnedMenu"
 
 interface ModelPickerProps {
   children: React.ReactNode
@@ -41,6 +41,10 @@ export default function ModelPicker({
     return ["item-1", "item-2"]
   })
 
+  useEffect(() => {
+    localStorage.setItem("modelPicker-openAccordions", JSON.stringify(openAccordions))
+  }, [openAccordions])
+
   const handleCloseModelPicker = (open: boolean) => {
     setIsModelPickerOpen(open)
     setTimeout(() => {
@@ -48,16 +52,17 @@ export default function ModelPicker({
     }, 200)
   }
 
-  useEffect(() => {
-    localStorage.setItem("modelPicker-openAccordions", JSON.stringify(openAccordions))
-  }, [openAccordions])
-
   const togglePinnedModel = async (model: IModel) => {
     const isPinned = pinnedModels.some((m) => m.name === model.name)
     const newPinnedModels = isPinned ? pinnedModels.filter((m) => m.name !== model.name) : [...pinnedModels, model]
 
     setPinnedModels(newPinnedModels)
     await updatePinnedModels(newPinnedModels)
+  }
+
+  const handlePinnedModelsReorder = async (newOrder: IModel[]) => {
+    setPinnedModels(newOrder)
+    await updatePinnedModels(newOrder)
   }
 
   return (
@@ -98,12 +103,30 @@ export default function ModelPicker({
           >
             {pinnedModels.length > 0 && (
               <AccordionItem value="item-1" className="border-none">
-                <AccordionTrigger>
+                <AccordionTrigger className="h-14 items-center">
                   <div className="flex items-center gap-2">
                     <Pin className="size-4" />
                     Pinned
                   </div>
-                  <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 -translate-x-2 transition-transform duration-200" />
+                  <div className="flex gap-2 items-center -translate-x-2">
+                    <OrderPinnedMenu
+                      pinnedModels={pinnedModels}
+                      onOrderChange={(newModels: IModel[]) => handlePinnedModelsReorder(newModels)}
+                    >
+                      <span
+                        className={`
+                          flex items-center justify-center cursor-pointer size-6 rounded-md hover:bg-sky-100 transition-opacity  
+                          ${pinnedModels.length >= 2 && openAccordions.includes("item-1") ? "opacity-100" : "opacity-0 pointer-events-none"}
+                        `}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <List className="size-4" />
+                      </span>
+                    </OrderPinnedMenu>
+                    <ChevronDownIcon
+                      className={`text-muted-foreground pointer-events-none size-4 shrink-0 transition-transform duration-200 ${openAccordions.includes("item-1") && "rotate-180"}`}
+                    />
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-5 gap-2 pt-1 pr-1">
@@ -123,9 +146,9 @@ export default function ModelPicker({
             )}
 
             <AccordionItem value="item-2">
-              <AccordionTrigger>
+              <AccordionTrigger className="h-14 items-center">
                 {pinnedModels.length === 0 ? "All models" : "Others"}
-                <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 -translate-x-2 transition-transform duration-200" />
+                <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 -translate-x-2 transition-transform duration-200" />
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid grid-cols-5 gap-2 pt-1 pr-1">
