@@ -2,6 +2,7 @@ import { updateChatModel } from "@/actions/chat"
 import { IModel } from "@/types/model"
 import Cookies from "js-cookie"
 import { Pin } from "lucide-react"
+import { motion } from "motion/react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 
@@ -26,7 +27,9 @@ export default function Model({ model, selectedModel, onTogglePin, setSelectedMo
   }
 
   return (
-    <button
+    <motion.button
+      layout
+      transition={{ duration: 0.15 }}
       className={`
         relative group flex flex-col justify-start items-center h-28 border rounded-lg cursor-pointer
         hover:bg-sky-100 hover:border-sky-300
@@ -56,6 +59,6 @@ export default function Model({ model, selectedModel, onTogglePin, setSelectedMo
 
       <p className="pt-6 text-sm text-[#192f72] dark:text-white font-medium">{model.baseModel}</p>
       {model.variant ? <p className="text-xs text-[#192f72] dark:text-white font-medium">{model.variant}</p> : <p />}
-    </button>
+    </motion.button>
   )
 }
