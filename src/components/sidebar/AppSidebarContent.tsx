@@ -4,6 +4,7 @@ import { categorizeChats } from "@/lib/chatCategorizer"
 import { useChatStore } from "@/stores/chatStoreProvider"
 import { useSearchStore } from "@/stores/searchStoreProvider"
 import { Chat } from "@/types/chat"
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react"
 import { useEffect } from "react"
 import { SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "../ui/sidebar"
 import ChatItem from "./ChatItem"
@@ -33,25 +34,27 @@ export default function AppSidebarContent({
 
   return (
     <SidebarContent>
-      {categories.map((category) => (
-        <SidebarGroup key={category} className="px-5">
-          <SidebarGroupLabel className="px-0 text-sky-600">{category}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {chatsWithCategory
-                .filter((chat) => chat.category === category)
-                .filter((chat) => chat.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                .map((chat) => (
-                  <ChatItem
-                    key={`${chat.category}-${chat.title}-${chat.updatedAt}`}
-                    chat={chat}
-                    currentChatId={currentChatId}
-                  />
-                ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      ))}
+      <OverlayScrollbarsComponent options={{ scrollbars: { autoHide: "scroll" } }} defer>
+        {categories.map((category) => (
+          <SidebarGroup key={category} className="px-5">
+            <SidebarGroupLabel className="px-0 text-sky-600">{category}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {chatsWithCategory
+                  .filter((chat) => chat.category === category)
+                  .filter((chat) => chat.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((chat) => (
+                    <ChatItem
+                      key={`${chat.category}-${chat.title}-${chat.updatedAt}`}
+                      chat={chat}
+                      currentChatId={currentChatId}
+                    />
+                  ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </OverlayScrollbarsComponent>
     </SidebarContent>
   )
 }

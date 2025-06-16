@@ -62,6 +62,10 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
   }
 
   useEffect(() => {
+    // experimental_resume()
+  }, [])
+
+  useEffect(() => {
     const container = document.scrollingElement || document.documentElement
 
     const handleScroll = () => {
@@ -150,7 +154,7 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
         initialModel={initialModel}
         initialPinnedModels={initialPinnedModels}
         status={status}
-        stopStreamingText={stop}
+        stop={stop}
         onSubmit={(text: string, model: IModel) => handleSubmit(text, model)}
       />
     </>

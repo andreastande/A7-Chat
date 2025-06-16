@@ -16,17 +16,11 @@ type ChatInputProps = {
   initialModel: IModel
   initialPinnedModels: IModel[]
   status?: UseChatHelpers<UIMessage>["status"]
-  stopStreamingText?: UseChatHelpers<UIMessage>["stop"]
+  stop?: UseChatHelpers<UIMessage>["stop"]
   onSubmit?: (text: string, model: IModel) => void
 }
 
-export default function ChatInput({
-  initialModel,
-  initialPinnedModels,
-  status,
-  stopStreamingText,
-  onSubmit,
-}: ChatInputProps) {
+export default function ChatInput({ initialModel, initialPinnedModels, status, stop, onSubmit }: ChatInputProps) {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -106,11 +100,7 @@ export default function ChatInput({
               <Paperclip className="size-4" />
             </button>
             {isMsgStreaming ? (
-              <button
-                type="button"
-                className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white"
-                onClick={stopStreamingText}
-              >
+              <button type="button" className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white" onClick={stop}>
                 <Square className="size-5" />
               </button>
             ) : (

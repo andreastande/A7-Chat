@@ -60,7 +60,9 @@ export const verification = pgTable("verification", {
 
 export const chat = pgTable("chat", {
   chatId: text("chat_id").primaryKey(),
-  userId: text("user_id").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   usesDefaultTitle: boolean("uses_default_title")
     .$defaultFn(() => /* @__PURE__ */ true)
@@ -97,4 +99,14 @@ export const pinnedModels = pgTable("pinned_models", {
     .primaryKey()
     .references(() => user.id, { onDelete: "cascade" }),
   models: jsonb("models").notNull(),
+})
+
+export const stream = pgTable("stream", {
+  streamId: text("stream_id").primaryKey(),
+  chatId: text("chat_id")
+    .notNull()
+    .references(() => chat.chatId, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 })
