@@ -59,7 +59,7 @@ export default function ChatInput({ initialModel, initialPinnedModels, status, s
     <div className="fixed bottom-0 pb-6 px-6 bg-background w-full max-w-3xl">
       <form
         onSubmit={handleSubmit}
-        className="-translate-y-2 px-4 py-2 rounded-2xl shadow-xl bg-sky-50 border border-sky-200"
+        className="-translate-y-2 px-4 py-2 rounded-2xl shadow-xl bg-sky-50 dark:bg-secondary border border-sky-200 dark:border-sky-900"
       >
         <TextareaAutosize
           autoFocus
@@ -96,18 +96,22 @@ export default function ChatInput({ initialModel, initialPinnedModels, status, s
           </ModelPicker>
 
           <div className="flex items-center gap-2">
-            <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150">
+            <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150 dark:hover:bg-zinc-700">
               <Paperclip className="size-4" />
             </button>
             {isMsgStreaming ? (
-              <button type="button" className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white" onClick={stop}>
+              <button
+                type="button"
+                className="cursor-pointer bg-sky-500 dark:bg-sky-700 rounded-lg p-2 text-white"
+                onClick={stop}
+              >
                 <Square className="size-5" />
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={!draftMessage.trim()}
-                className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
+                className="cursor-pointer bg-sky-500 dark:bg-sky-700 rounded-lg p-2 text-white disabled:bg-sky-150 dark:disabled:bg-[#043d5d] dark:disabled:text-gray-600 disabled:cursor-not-allowed"
               >
                 <ArrowUp className="size-5" />
               </button>

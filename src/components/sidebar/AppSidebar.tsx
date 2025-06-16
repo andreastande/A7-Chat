@@ -1,10 +1,11 @@
-import { Sidebar, SidebarFooter, SidebarRail } from "@/components/ui/sidebar"
+import { Sidebar, SidebarRail } from "@/components/ui/sidebar"
 import { db } from "@/db"
-import { chat } from "@/db/schema"
+import { chat, user } from "@/db/schema"
 import { verifySession } from "@/lib/dal"
 import { Chat } from "@/types/chat"
 import { desc, eq } from "drizzle-orm"
 import AppSidebarContent from "./AppSidebarContent"
+import AppSidebarFooter from "./AppSidebarFooter"
 import AppSidebarHeader from "./AppSidebarHeader"
 
 export async function AppSidebar({ chatId }: { chatId?: string }) {
@@ -21,11 +22,20 @@ export async function AppSidebar({ chatId }: { chatId?: string }) {
     .where(eq(chat.userId, userId))
     .orderBy(desc(chat.updatedAt))
 
+  const userRow = await db
+    .select({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    })
+    .from(user)
+    .where(eq(user.id, userId))
+
   return (
     <Sidebar>
       <AppSidebarHeader />
       <AppSidebarContent currentChatId={chatId} initialChats={initialChats} />
-      <SidebarFooter className="h-30 border-t border-sky-200 dark:border-zinc-500" />
+      <AppSidebarFooter user={userRow[0]} />
       <SidebarRail />
     </Sidebar>
   )

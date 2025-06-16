@@ -15,16 +15,16 @@ export default function ChatPanel() {
     <div
       className={`
         fixed left-4 top-4 z-20 p-1 border flex space-x-1
-        ${!open ? "bg-sky-100 rounded-lg border-sky-200" : "border-transparent"}
+        ${!open ? "bg-sky-100 dark:bg-secondary rounded-lg border-sky-200 dark:border-sky-900" : "border-transparent"}
       `}
     >
-      <SidebarTrigger className="cursor-pointer hover:bg-sky-200" />
+      <SidebarTrigger className="cursor-pointer hover:bg-sky-200 dark:hover:bg-zinc-700" />
       {!open &&
         (pathname !== "/" ? (
           <Button
             variant="ghost"
             size="icon"
-            className="cursor-pointer hover:bg-sky-200"
+            className="cursor-pointer hover:bg-sky-200 dark:hover:bg-zinc-700"
             onClick={() => router.push("/")}
           >
             <Plus className="cursor-pointer size-5" />

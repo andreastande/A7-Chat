@@ -32,7 +32,7 @@ export default function Model({ model, selectedModel, onTogglePin, setSelectedMo
       transition={{ duration: 0.15 }}
       className={`
         relative group flex flex-col justify-start items-center h-28 border rounded-lg cursor-pointer
-        hover:bg-sky-100 hover:border-sky-300
+        hover:bg-sky-100 hover:border-sky-300 dark:hover:bg-zinc-800/30 dark:hover:border-zinc-400
         ${
           model.name === selectedModel.name
             ? "bg-sky-100 dark:bg-zinc-800/30 border-sky-400 dark:border-zinc-300"
@@ -43,8 +43,9 @@ export default function Model({ model, selectedModel, onTogglePin, setSelectedMo
     >
       <div
         className={`
-          absolute -right-1 -top-1 p-1 bg-sky-200 border border-sky-300 rounded-md
-          hover:bg-sky-300 hover:border-sky-400 invisible group-hover:visible
+          absolute -right-1 -top-1 p-1 bg-sky-200 dark:bg-zinc-900 border border-sky-300 dark:border-zinc-400 
+          rounded-md hover:bg-sky-300 hover:border-sky-400 dark:hover:bg-zinc-800 dark:hover:border-zinc-300
+          invisible group-hover:visible
         `}
         onClick={(e) => {
           e.stopPropagation()

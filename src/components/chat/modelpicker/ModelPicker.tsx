@@ -69,7 +69,7 @@ export default function ModelPicker({
     <Popover open={isModelPickerOpen} onOpenChange={(open) => handleCloseModelPicker(open)}>
       <PopoverTrigger
         type="button"
-        className="flex items-center cursor-pointer gap-2 rounded-lg p-2 hover:bg-sky-150 -translate-x-1.5"
+        className="flex items-center cursor-pointer gap-2 rounded-lg p-2 hover:bg-sky-150 dark:hover:bg-zinc-700 -translate-x-1.5"
       >
         {children}
       </PopoverTrigger>

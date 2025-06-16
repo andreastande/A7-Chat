@@ -143,7 +143,7 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
       {showScrollToBottom && (
         <div className="fixed bottom-38 z-10">
           <button
-            className="rounded-full p-1 bg-sky-200 border border-sky-300 cursor-pointer"
+            className="rounded-full p-1 bg-sky-200 dark:bg-sky-800 border border-sky-300 dark:border-sky-600 cursor-pointer"
             onClick={() => scrollToBottom("smooth")}
           >
             <ChevronDown className="size-4" />
