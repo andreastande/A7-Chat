@@ -115,7 +115,7 @@ export default function ModelPicker({
                     >
                       <span
                         className={`
-                          flex items-center justify-center cursor-pointer size-6 rounded-md hover:bg-sky-100 transition-opacity  
+                          flex items-center justify-center cursor-pointer size-6 rounded-md hover:bg-sky-100 dark:hover:bg-accent/50 transition-opacity  
                           ${pinnedModels.length >= 2 && openAccordions.includes("item-1") ? "opacity-100" : "opacity-0 pointer-events-none"}
                         `}
                         onClick={(e) => e.stopPropagation()}

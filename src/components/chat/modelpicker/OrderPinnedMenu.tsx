@@ -101,7 +101,7 @@ function Sortable({ item, pinnedModels }: { item: string; pinnedModels: IModel[]
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="flex items-center space-x-4 pr-2 py-1 hover:bg-sky-50 rounded"
+      className="flex items-center space-x-4 pr-2 py-1 hover:bg-sky-50 dark:hover:bg-accent/50 rounded"
     >
       <div {...listeners} className="px-2 cursor-grab">
         <GripVertical className="size-4 " />
