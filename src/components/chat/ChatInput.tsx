@@ -3,20 +3,30 @@
 import { createChatPlaceholder } from "@/actions/chat"
 import { useMessageStore } from "@/stores/messageStoreProvider"
 import { IModel } from "@/types/model"
-import { ArrowUp, ChevronDown, Paperclip } from "lucide-react"
+import { UseChatHelpers } from "@ai-sdk/react"
+import { UIMessage } from "ai"
+import { ArrowUp, ChevronDown, Paperclip, Square } from "lucide-react"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import ModelPicker from "./modelpicker/ModelPicker"
 
 type ChatInputProps = {
   initialModel: IModel
   initialPinnedModels: IModel[]
+  status?: UseChatHelpers<UIMessage>["status"]
+  stopStreamingText?: UseChatHelpers<UIMessage>["stop"]
   onSubmit?: (text: string, model: IModel) => void
 }
 
-export default function ChatInput({ initialModel, initialPinnedModels, onSubmit }: ChatInputProps) {
+export default function ChatInput({
+  initialModel,
+  initialPinnedModels,
+  status,
+  stopStreamingText,
+  onSubmit,
+}: ChatInputProps) {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -26,6 +36,11 @@ export default function ChatInput({ initialModel, initialPinnedModels, onSubmit 
   const setPendingMessage = useMessageStore((s) => s.setPendingMessage)
 
   const [selectedModel, setSelectedModel] = useState<IModel>(initialModel)
+  const [isMsgStreaming, setIsMsgStreaming] = useState(false)
+
+  useEffect(() => {
+    setIsMsgStreaming(status === "submitted" || status === "streaming")
+  }, [status])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +52,7 @@ export default function ChatInput({ initialModel, initialPinnedModels, onSubmit 
     onSubmit?.(msg, selectedModel)
 
     if (pathname === "/") {
+      setIsMsgStreaming(true)
       setPendingMessage(msg)
 
       const chatId = crypto.randomUUID()
@@ -89,13 +105,23 @@ export default function ChatInput({ initialModel, initialPinnedModels, onSubmit 
             <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150">
               <Paperclip className="size-4" />
             </button>
-            <button
-              type="submit"
-              disabled={!draftMessage.trim()}
-              className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
-            >
-              <ArrowUp className="size-5" />
-            </button>
+            {isMsgStreaming ? (
+              <button
+                type="button"
+                className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white"
+                onClick={stopStreamingText}
+              >
+                <Square className="size-5" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!draftMessage.trim()}
+                className="cursor-pointer bg-sky-500 rounded-lg p-2 text-white disabled:bg-sky-150 disabled:cursor-not-allowed"
+              >
+                <ArrowUp className="size-5" />
+              </button>
+            )}
           </div>
         </div>
       </form>

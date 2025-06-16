@@ -8,8 +8,9 @@ import { useMessageStore } from "@/stores/messageStoreProvider"
 import { IModel } from "@/types/model"
 import { useChat } from "@ai-sdk/react"
 import { UIMessage } from "ai"
-import { ChevronDown } from "lucide-react"
+import { AlertCircle, ChevronDown } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { Alert, AlertTitle } from "../ui/alert"
 import ChatBubble from "./ChatBubble"
 import ChatInput from "./ChatInput"
 
@@ -32,7 +33,7 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
 
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
 
-  const { status, messages, sendMessage } = useChat({
+  const { status, messages, sendMessage, stop, error } = useChat({
     messages: initialMessages,
     onFinish: async ({ message }) => {
       await storeAssistantMessage(chatId, message)
@@ -126,6 +127,12 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
             className="scroll-mt-14"
           >
             <ChatBubble message={msg} />
+            {error && i === messages.length - 1 && (
+              <Alert variant="destructive" className="w-fit mt-14">
+                <AlertCircle className="size-4" />
+                <AlertTitle>{error.message}</AlertTitle>
+              </Alert>
+            )}
           </div>
         ))}
       </div>
@@ -142,6 +149,8 @@ export default function Chat({ chatId, initialMessages, initialModel, initialPin
       <ChatInput
         initialModel={initialModel}
         initialPinnedModels={initialPinnedModels}
+        status={status}
+        stopStreamingText={stop}
         onSubmit={(text: string, model: IModel) => handleSubmit(text, model)}
       />
     </>
