@@ -1,6 +1,6 @@
 "use client"
 
-import { Sun } from "lucide-react"
+import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "../ui/button"
 
@@ -15,7 +15,10 @@ export default function DarkModePanel() {
         className="cursor-pointer hover:bg-sky-200 dark:hover:bg-zinc-700"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       >
-        <Sun className="size-5" />
+        <div className="relative size-5">
+          <Moon className="absolute size-5 scale-100 dark:scale-0" />
+          <Sun className="size-5 scale-0 dark:scale-100" />
+        </div>
         <span className="sr-only">Toggle theme</span>
       </Button>
     </div>
