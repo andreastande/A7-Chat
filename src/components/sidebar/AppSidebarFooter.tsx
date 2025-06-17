@@ -1,6 +1,7 @@
 "use client"
 
 import { CircleUser } from "lucide-react"
+import Image from "next/image"
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { SidebarFooter } from "../ui/sidebar"
 
@@ -9,6 +10,7 @@ interface AppSidebarFooterProps {
     id: string
     name: string
     email: string
+    image: string | null
   }
 }
 
@@ -18,7 +20,13 @@ export default function AppSidebarFooter({ user }: AppSidebarFooterProps) {
       <Dialog>
         <DialogTrigger>
           <div className="flex items-center gap-4 p-3 cursor-pointer hover:bg-sky-100 dark:hover:bg-sidebar-accent rounded-md">
-            <CircleUser className="size-8 text-sky-600" />
+            {user.image ? (
+              <div className="relative size-8">
+                <Image src={user.image} alt="Avatar" fill className="rounded-full ring ring-sky-400" />
+              </div>
+            ) : (
+              <CircleUser className="size-8 text-sky-600" />
+            )}
             <span className="font-medium">{user.name}</span>
           </div>
         </DialogTrigger>

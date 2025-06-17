@@ -27,6 +27,7 @@ export async function AppSidebar({ chatId }: { chatId?: string }) {
       id: user.id,
       name: user.name,
       email: user.email,
+      image: user.image,
     })
     .from(user)
     .where(eq(user.id, userId))
