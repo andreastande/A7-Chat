@@ -17,4 +17,9 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
 })
