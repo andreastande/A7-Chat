@@ -1,6 +1,5 @@
 import SignUpForm from "@/components/forms/SignUpForm"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import GitHubSignIn from "@/components/GitHubSignIn"
 import Link from "next/link"
 
 export default function Page() {
@@ -19,12 +18,7 @@ export default function Page() {
           <span className="text-sm font-medium ">or</span>
           <div className="flex-1 h-px bg-black dark:bg-white" />
         </div>
-        <Button variant="outline" className="cursor-pointer w-full mt-6 gap-2">
-          <div className="relative size-5">
-            <Image src="/images/Google.png" alt="Google logo" fill />
-          </div>
-          Continue with Google
-        </Button>
+        <GitHubSignIn />
       </div>
     </div>
   )
