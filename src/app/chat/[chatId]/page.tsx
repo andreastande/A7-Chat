@@ -13,10 +13,12 @@ import dynamic from "next/dynamic"
 
 const ToastInvoker = dynamic(() => import("@/components/ToastInvoker"), { ssr: !!false })
 
-type Params = { params: { chatId: string } }
+type Params = {
+  params: Promise<{ chatId: string }>
+}
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { chatId } = params
+  const { chatId } = await params
   const { userId } = await verifySession()
 
   const chatRow = await db
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   }
 }
 
-export default async function Page({ params }: { params: Promise<{ chatId: string }> }) {
+export default async function Page({ params }: Params) {
   const { chatId } = await params
 
   const { userId } = await verifySession()
