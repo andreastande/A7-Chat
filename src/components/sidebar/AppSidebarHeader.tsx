@@ -13,7 +13,10 @@ export default function AppSidebarHeader() {
 
   return (
     <SidebarHeader className="h-36 border-b px-5 pt-2 pb-0 items-center border-sky-200 dark:border-zinc-500">
-      <Link href="/" className="w-full mt-15" onClick={(e) => pathname === "/" && e.preventDefault()}>
+      <Link href="/" className="mt-5 font-bold text-sky-600" onClick={(e) => pathname === "/" && e.preventDefault()}>
+        A7 Chat
+      </Link>
+      <Link href="/" className="w-full mt-2" onClick={(e) => pathname === "/" && e.preventDefault()}>
         <button
           className="font-semibold bg-sky-500 dark:bg-sky-700 border border-sky-400 dark:border-sky-600 rounded-md py-1 w-full cursor-pointer text-white"
           onClick={() => pathname !== "/" && setSearchTerm("")}

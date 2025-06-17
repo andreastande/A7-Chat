@@ -9,7 +9,7 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
       fileUpload: false,
     },
@@ -22,7 +22,7 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
       fileUpload: false,
     },
@@ -35,7 +35,7 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
       fileUpload: false,
     },
@@ -48,7 +48,7 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
       fileUpload: false,
     },
@@ -61,7 +61,7 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
       fileUpload: false,
     },
@@ -74,8 +74,8 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
+      imageUpload: true,
+      reasoning: true,
       fileUpload: false,
     },
   },
@@ -88,7 +88,7 @@ export const models: IModel[] = [
     capabilities: {
       search: false,
       imageUpload: false,
-      reasoning: false,
+      reasoning: true,
       fileUpload: false,
     },
   },
@@ -100,8 +100,8 @@ export const models: IModel[] = [
     provider: "OpenAI",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
+      imageUpload: true,
+      reasoning: true,
       fileUpload: false,
     },
   },
@@ -113,10 +113,10 @@ export const models: IModel[] = [
     APIName: "gemini-2.0-flash",
     provider: "Google",
     capabilities: {
-      search: false,
-      imageUpload: false,
+      search: true,
+      imageUpload: true,
       reasoning: false,
-      fileUpload: false,
+      fileUpload: true,
     },
   },
   {
@@ -127,9 +127,9 @@ export const models: IModel[] = [
     provider: "Google",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
-      fileUpload: false,
+      fileUpload: true,
     },
   },
   {
@@ -139,10 +139,10 @@ export const models: IModel[] = [
     APIName: "gemini-2.5-flash-preview-05-20",
     provider: "Google",
     capabilities: {
-      search: false,
-      imageUpload: false,
+      search: true,
+      imageUpload: true,
       reasoning: false,
-      fileUpload: false,
+      fileUpload: true,
     },
   },
   {
@@ -153,9 +153,9 @@ export const models: IModel[] = [
     provider: "Google",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
-      fileUpload: false,
+      imageUpload: true,
+      reasoning: true,
+      fileUpload: true,
     },
   },
   // Anthropic
@@ -167,9 +167,9 @@ export const models: IModel[] = [
     provider: "Anthropic",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
-      fileUpload: false,
+      fileUpload: true,
     },
   },
   {
@@ -180,9 +180,9 @@ export const models: IModel[] = [
     provider: "Anthropic",
     capabilities: {
       search: false,
-      imageUpload: false,
+      imageUpload: true,
       reasoning: false,
-      fileUpload: false,
+      fileUpload: true,
     },
   },
   {
@@ -193,9 +193,9 @@ export const models: IModel[] = [
     provider: "Anthropic",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
-      fileUpload: false,
+      imageUpload: true,
+      reasoning: true,
+      fileUpload: true,
     },
   },
   {
@@ -206,9 +206,9 @@ export const models: IModel[] = [
     provider: "Anthropic",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
-      fileUpload: false,
+      imageUpload: true,
+      reasoning: true,
+      fileUpload: true,
     },
   },
   {
@@ -219,9 +219,9 @@ export const models: IModel[] = [
     provider: "Anthropic",
     capabilities: {
       search: false,
-      imageUpload: false,
-      reasoning: false,
-      fileUpload: false,
+      imageUpload: true,
+      reasoning: true,
+      fileUpload: true,
     },
   },
   // xAI
@@ -247,7 +247,7 @@ export const models: IModel[] = [
     capabilities: {
       search: false,
       imageUpload: false,
-      reasoning: false,
+      reasoning: true,
       fileUpload: false,
     },
   },

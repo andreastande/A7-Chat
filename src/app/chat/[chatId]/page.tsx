@@ -8,9 +8,34 @@ import { decryptUIMessage } from "@/lib/crypto"
 import { verifySession } from "@/lib/dal"
 import { UIMessage } from "ai"
 import { and, eq } from "drizzle-orm"
+import { Metadata } from "next"
 import dynamic from "next/dynamic"
 
 const ToastInvoker = dynamic(() => import("@/components/ToastInvoker"), { ssr: !!false })
+
+type Params = { params: { chatId: string } }
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { chatId } = params
+  const { userId } = await verifySession()
+
+  const chatRow = await db
+    .select({ title: chat.title })
+    .from(chat)
+    .where(and(eq(chat.chatId, chatId), eq(chat.userId, userId)))
+    .limit(1)
+
+  const pageTitle = chatRow.length > 0 ? chatRow[0].title : "Chat"
+
+  return {
+    title: pageTitle + " - A7 Chat",
+    description: `Conversation: ${pageTitle}`,
+    openGraph: {
+      title: pageTitle + " - A7 Chat",
+      description: `Chat session titled “${pageTitle}”`,
+    },
+  }
+}
 
 export default async function Page({ params }: { params: Promise<{ chatId: string }> }) {
   const { chatId } = await params

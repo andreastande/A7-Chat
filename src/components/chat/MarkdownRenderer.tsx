@@ -17,6 +17,9 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         ul: ({ children }) => <ul className="mt-5 pl-[26px] list-disc">{children}</ul>,
         ol: ({ children }) => <ul className="mt-5 pl-[26px] list-decimal">{children}</ul>,
         table: ({ children }) => <table className="my-7">{children}</table>,
+        hr: ({ children }) => (
+          <hr className="my-12 border-0 border-t-1 border-sky-200 dark:border-sky-800">{children}</hr>
+        ),
         h1: ({ children }) => <h1 className="mb-8 mt-4 text-4xl font-medium">{children}</h1>,
         h2: ({ children }) => <h2 className="mt-12 mb-6 text-3xl font-medium">{children}</h2>,
         h3: ({ children }) => <h3 className="mb-3 text-3xl font-medium">{children}</h3>,

@@ -1,11 +1,15 @@
 import SignUpForm from "@/components/forms/SignUpForm"
 import GitHubSignIn from "@/components/GitHubSignIn"
+import Image from "next/image"
 import Link from "next/link"
 
 export default function Page() {
   return (
     <div className="flex items-center h-screen w-full bg-[url(/images/log-in-bg_light.png)] dark:bg-[url(/images/log-in-bg_dark.png)] bg-cover bg-center pl-70">
       <div className="flex flex-col items-center">
+        <div className="relative size-20 mb-8">
+          <Image src="/images/A7_logo.png" alt="A7 Chat logo" fill />
+        </div>
         <SignUpForm />
         <span className="text-sm mt-2">
           Alreadt have an account?{" "}

@@ -34,7 +34,7 @@ export default function AppSidebarFooter({ user }: AppSidebarFooterProps) {
           <DialogTitle>Account settings</DialogTitle>
           <DialogDescription>
             This was heavily downprioritized, so nothing to find here... but enjoy free inference costs! :D (be nice
-            pls)
+            pls, <strong className="underline">$5</strong> budget per provider)
           </DialogDescription>
         </DialogContent>
       </Dialog>

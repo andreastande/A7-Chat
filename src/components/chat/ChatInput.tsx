@@ -10,6 +10,7 @@ import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import ModelPicker from "./modelpicker/ModelPicker"
 
 type ChatInputProps = {
@@ -96,9 +97,16 @@ export default function ChatInput({ initialModel, initialPinnedModels, status, s
           </ModelPicker>
 
           <div className="flex items-center gap-2">
-            <button type="button" className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150 dark:hover:bg-zinc-700">
-              <Paperclip className="size-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger
+                type="button"
+                className="cursor-pointer rounded-lg p-2.5 hover:bg-sky-150 dark:hover:bg-zinc-700"
+              >
+                <Paperclip className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent className="text-white">Not implemented</TooltipContent>
+            </Tooltip>
+
             {isMsgStreaming ? (
               <button
                 type="button"

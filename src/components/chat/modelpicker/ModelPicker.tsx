@@ -2,6 +2,7 @@ import { updatePinnedModels } from "@/actions/model"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { models } from "@/lib/constants"
 import { IModel } from "@/types/model"
 import { ChevronDownIcon, Filter, List, Pin, Search } from "lucide-react"
@@ -84,9 +85,14 @@ export default function ModelPicker({
               className="text-sm w-full outline-none"
             />
           </div>
-          <Button variant="ghost" className="cursor-pointer size-8 ml-2 hover:bg-sky-100">
-            <Filter className="size-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" className="cursor-pointer size-8 ml-2 hover:bg-sky-100">
+                <Filter className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-white">Not implemented</TooltipContent>
+          </Tooltip>
         </div>
 
         <OverlayScrollbarsComponent
