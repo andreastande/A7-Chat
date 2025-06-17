@@ -5,6 +5,16 @@ html {
   scrollbar-gutter: stable;
 }
 
+.os-scrollbar {
+  --os-size: 8px;
+  --os-handle-bg: #b8e6fe;
+}
+
+.dark .os-scrollbar {
+  --os-size: 8px;
+  --os-handle-bg: #052f4a;
+}
+
 @theme {
   --color-sky-150: #ccecfe;
 }
