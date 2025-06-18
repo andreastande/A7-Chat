@@ -140,6 +140,7 @@ export default function ModelPicker({
                       <Model
                         key={model.name}
                         model={model}
+                        isPinned
                         onTogglePin={(model) => togglePinnedModel(model)}
                         selectedModel={selectedModel}
                         setSelectedModel={setSelectedModel}

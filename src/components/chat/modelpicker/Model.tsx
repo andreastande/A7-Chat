@@ -1,7 +1,7 @@
 import { updateChatModel } from "@/actions/chat"
 import { IModel } from "@/types/model"
 import Cookies from "js-cookie"
-import { Brain, Eye, FileText, Globe, Pin } from "lucide-react"
+import { Brain, Eye, FileText, Globe, Pin, PinOff } from "lucide-react"
 import { motion } from "motion/react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 interface ModelProps {
   model: IModel
   selectedModel: IModel
+  isPinned?: boolean
   onTogglePin: (model: IModel) => void
   setSelectedModel: (model: IModel) => void
   closeModelPicker: () => void
@@ -44,7 +45,14 @@ const filterBgColor: Record<string, string> = {
   imageUpload: "bg-green-400/25 dark:bg-green-300/25",
 }
 
-export default function Model({ model, selectedModel, onTogglePin, setSelectedModel, closeModelPicker }: ModelProps) {
+export default function Model({
+  model,
+  selectedModel,
+  isPinned,
+  onTogglePin,
+  setSelectedModel,
+  closeModelPicker,
+}: ModelProps) {
   const pathname = usePathname()
 
   const handleSelectModel = async () => {
@@ -84,7 +92,7 @@ export default function Model({ model, selectedModel, onTogglePin, setSelectedMo
           onTogglePin(model)
         }}
       >
-        <Pin className="size-4" />
+        {isPinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
       </div>
       <div className="absolute left-1 top-1 size-4">
         <Image src={`/images/${model.provider.toLowerCase()}/logo_dark-blue.png`} alt="Provider logo" fill />
